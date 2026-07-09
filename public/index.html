@@ -189,9 +189,9 @@ header{background:var(--dark);padding:0 16px;display:flex;align-items:center;jus
 
 <!-- Tabs -->
 <div class="tabs">
-  <button class="tab-btn on" onclick="setTab('f1')"><span class="tab-icon">🟢</span>F1·Discos AG</button>
-  <button class="tab-btn" onclick="setTab('f2')"><span class="tab-icon">🟡</span>F2·Past. AG</button>
-  <button class="tab-btn" onclick="setTab('f3')"><span class="tab-icon">🔵</span>F3·Sin match</button>
+  <button class="tab-btn on" onclick="setTab('f1')"><span class="tab-icon" style="display:inline-flex"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 36 36" width="22" height="22"><circle cx="18" cy="18" r="16" fill="#e8f5e9" stroke="#4caf50" stroke-width="2"/><circle cx="18" cy="18" r="10" fill="none" stroke="#4caf50" stroke-width="2.5"/><circle cx="18" cy="18" r="4" fill="#4caf50"/><line x1="18" y1="2" x2="18" y2="8" stroke="#4caf50" stroke-width="2" stroke-linecap="round"/><line x1="18" y1="28" x2="18" y2="34" stroke="#4caf50" stroke-width="2" stroke-linecap="round"/><line x1="2" y1="18" x2="8" y2="18" stroke="#4caf50" stroke-width="2" stroke-linecap="round"/><line x1="28" y1="18" x2="34" y2="18" stroke="#4caf50" stroke-width="2" stroke-linecap="round"/></svg></span>F1·Discos AG</button>
+  <button class="tab-btn" onclick="setTab('f2')"><span class="tab-icon" style="display:inline-flex"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 36 36" width="22" height="22"><rect x="6" y="8" width="24" height="18" rx="4" fill="#fff8e1" stroke="#f59e0b" stroke-width="2"/><rect x="10" y="12" width="16" height="10" rx="2" fill="#f59e0b"/><rect x="13" y="26" width="4" height="4" rx="1" fill="#f59e0b"/><rect x="19" y="26" width="4" height="4" rx="1" fill="#f59e0b"/></svg></span>F2·Past. AG</button>
+  <button class="tab-btn" onclick="setTab('f3')"><span class="tab-icon" style="display:inline-flex"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 36 36" width="22" height="22"><line x1="18" y1="4" x2="18" y2="16" stroke="#0ea5e9" stroke-width="2.5" stroke-linecap="round"/><circle cx="18" cy="20" r="5" fill="#e0f2fe" stroke="#0ea5e9" stroke-width="2"/><circle cx="18" cy="20" r="2" fill="#0ea5e9"/><path d="M10 28 Q18 22 26 28" stroke="#0ea5e9" stroke-width="2" fill="none" stroke-linecap="round"/><path d="M7 32 Q18 24 29 32" stroke="#0ea5e9" stroke-width="1.5" fill="none" stroke-linecap="round" opacity=".5"/></svg></span>F3·Sin match</button>
   <button class="tab-btn" onclick="setTab('pub')"><span class="tab-icon">⭐</span>Publicados</button>
 </div>
 <div class="section-count" id="section-count"></div>
@@ -235,7 +235,10 @@ var INV={"92082203":"Disco Del. 256mm Bora/Golf/Audi A1","92082303":"Disco Del. 
 var datos={};var tab='f1';var skuActual=null;
 
 function tipoSKU(s){if(s.startsWith('92'))return'disco';if(s.startsWith('2')||s==='4226001')return'pastilla';if(s.startsWith('98'))return'sensor';return'disco';}
-function iconoSKU(s){var t=tipoSKU(s);return t==='disco'?'💿':t==='pastilla'?'🔲':'📡';}
+var _DISC_SVG='<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 36 36" width="36" height="36"><circle cx="18" cy="18" r="16" fill="#e8f5e9" stroke="#4caf50" stroke-width="2"/><circle cx="18" cy="18" r="10" fill="none" stroke="#4caf50" stroke-width="2.5"/><circle cx="18" cy="18" r="4" fill="#4caf50"/><line x1="18" y1="2" x2="18" y2="8" stroke="#4caf50" stroke-width="2" stroke-linecap="round"/><line x1="18" y1="28" x2="18" y2="34" stroke="#4caf50" stroke-width="2" stroke-linecap="round"/><line x1="2" y1="18" x2="8" y2="18" stroke="#4caf50" stroke-width="2" stroke-linecap="round"/><line x1="28" y1="18" x2="34" y2="18" stroke="#4caf50" stroke-width="2" stroke-linecap="round"/></svg>';
+var _PAD_SVG='<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 36 36" width="36" height="36"><rect x="6" y="8" width="24" height="18" rx="4" fill="#fff8e1" stroke="#f59e0b" stroke-width="2"/><rect x="10" y="12" width="16" height="10" rx="2" fill="#f59e0b"/><rect x="13" y="26" width="4" height="4" rx="1" fill="#f59e0b"/><rect x="19" y="26" width="4" height="4" rx="1" fill="#f59e0b"/></svg>';
+var _SEN_SVG='<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 36 36" width="36" height="36"><line x1="18" y1="4" x2="18" y2="16" stroke="#0ea5e9" stroke-width="2.5" stroke-linecap="round"/><circle cx="18" cy="20" r="5" fill="#e0f2fe" stroke="#0ea5e9" stroke-width="2"/><circle cx="18" cy="20" r="2" fill="#0ea5e9"/><path d="M10 28 Q18 22 26 28" stroke="#0ea5e9" stroke-width="2" fill="none" stroke-linecap="round"/><path d="M7 32 Q18 24 29 32" stroke="#0ea5e9" stroke-width="1.5" fill="none" stroke-linecap="round" opacity=".5"/></svg>';
+function iconoSKU(s){var t=tipoSKU(s);return t==='disco'?_DISC_SVG:t==='pastilla'?_PAD_SVG:_SEN_SVG;}
 function thumbClass(s){var t=tipoSKU(s);return t==='disco'?'disco':t==='pastilla'?'pastilla':'sensor';}
 function esFase2(s){return s.startsWith('2')||s.startsWith('98')||s==='4226001';}
 function esFase3(s){return s.startsWith('92')&&!FASE1.has(s);}
@@ -280,7 +283,7 @@ function abrirModal(){
   var fi=faseInfo(raw);
   document.getElementById('modal-sku').textContent='SKU '+raw;
   document.getElementById('modal-name').textContent=desc;
-  document.getElementById('modal-thumb').textContent=iconoSKU(raw);
+  document.getElementById('modal-thumb').innerHTML=iconoSKU(raw);
   document.getElementById('modal-thumb').className='modal-thumb '+thumbClass(raw);
   var fEl=document.getElementById('modal-fase');fEl.textContent=fi.txt;fEl.className='modal-fase '+fi.cls;
   document.getElementById('qty-input').value=1;
@@ -322,7 +325,7 @@ function fmt(ts){
 function setTab(t){
   tab=t;
   document.querySelectorAll('.tab-btn').forEach(function(el){el.classList.remove('on');});
-  var idx=['f1','f3','f2','pub'].indexOf(t);
+  var idx=['f1','f2','f3','pub'].indexOf(t);
   document.querySelectorAll('.tab-btn')[idx].classList.add('on');
   render();
 }
