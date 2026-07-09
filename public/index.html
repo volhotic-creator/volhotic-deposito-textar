@@ -189,9 +189,9 @@ header{background:var(--dark);padding:0 16px;display:flex;align-items:center;jus
 
 <!-- Tabs -->
 <div class="tabs">
-  <button class="tab-btn on" onclick="setTab('f1')"><span class="tab-icon">🟢</span>Fase 1</button>
-  <button class="tab-btn" onclick="setTab('f3')"><span class="tab-icon">🔵</span>Fase 3</button>
-  <button class="tab-btn" onclick="setTab('f2')"><span class="tab-icon">🟡</span>Fase 2</button>
+  <button class="tab-btn on" onclick="setTab('f1')"><span class="tab-icon">🟢</span>F1·Discos AG</button>
+  <button class="tab-btn" onclick="setTab('f2')"><span class="tab-icon">🟡</span>F2·Past. AG</button>
+  <button class="tab-btn" onclick="setTab('f3')"><span class="tab-icon">🔵</span>F3·Sin match</button>
   <button class="tab-btn" onclick="setTab('pub')"><span class="tab-icon">⭐</span>Publicados</button>
 </div>
 <div class="section-count" id="section-count"></div>
@@ -344,6 +344,28 @@ function mkItem(sku,d,accentCls,thumbCls,badgeCls,badgeTxt,extra){
     +'<span class="item-badge '+badgeCls+'">'+badgeTxt+'</span>'
     +'</div></div>';
 }
+/*
+ * LÓGICA DE FASES — REGLA IMPORTANTE
+ * =====================================
+ * FASE 1 : Discos (92xxxxx) CON match en Alta Gama → set FASE1 (64 SKUs)
+ * FASE 2 : Pastillas/Sensores (2xxxxxx / 98xxxxx) CON match en Alta Gama → set FASE2_AG
+ * FASE 3 : TODO lo que NO tiene match AG:
+ *           - Discos 92xxxxx que no están en FASE1
+ *           - Pastillas/Sensores que no están en FASE2_AG
+ *
+ * ⚠️  REGLA AUTODOC — VERIFICACIÓN OBLIGATORIA POST-SCRAPING:
+ *     Cuando se corra el scraping de autodoc.es para obtener códigos OEM:
+ *     1. Re-cruzar TODOS los SKUs contra la tienda Alta Gama actualizada
+ *     2. Los que pasen a tener match AG se mueven de Fase 3 → Fase 1 o Fase 2
+ *     3. Actualizar sets FASE1 y FASE2_AG con los nuevos matches
+ *     4. Esta verificación es OBLIGATORIA — no omitir
+ *     Los SKUs de Fase 3 son candidatos a ganar match tras autodoc.
+ * =====================================
+ */
+function tieneMatchAG(sku){return FASE1.has(sku)||FASE2_AG.has(sku);}
+function esDisco(sku){return sku.startsWith('92');}
+function esPastillaSensor(sku){return sku.startsWith('2')||sku.startsWith('98')||sku==='4226001';}
+
 function render(){
   var all=Object.entries(datos);
   var enc=all.filter(function(e){return e[1].estado==='enc';});
@@ -354,40 +376,47 @@ function render(){
   document.getElementById('s-pend').textContent=Math.max(0,TOTAL-enc.length-noe.length);
   var list=document.getElementById('list');
   var count=document.getElementById('section-count');
+
+  // FASE 1: Discos encontrados CON match Alta Gama
   if(tab==='f1'){
     var items=enc.filter(function(e){return FASE1.has(e[0]);});
-    count.textContent=items.length+' disco'+(items.length!==1?'s':'')+' listos · "Vender uno igual"';
-    if(!items.length){list.innerHTML='<div class="empty"><div class="empty-icon">💿</div><div class="empty-text">Cristian aún no encontró<br>discos Fase 1</div></div>';return;}
+    count.textContent=items.length+' disco'+(items.length!==1?'s':'')+' con match AG · "Vender uno igual"';
+    if(!items.length){list.innerHTML='<div class="empty"><div class="empty-icon">💿</div><div class="empty-text">Cristian aún no encontró<br>discos con match AG</div></div>';return;}
     list.innerHTML=items.sort(function(a,b){return(b[1].ts||0)-(a[1].ts||0);}).map(function(e){
       return mkItem(e[0],e[1],'f1','disco','badge-f1',e[1].publicado?'✅ Pub.':'Listo','<span class="item-ag">AG ✓</span>');
     }).join('');
-  } else if(tab==='f3'){
-    var items=enc.filter(function(e){return esFase3(e[0]);});
-    count.textContent=items.length+' disco'+(items.length!==1?'s':'')+' · sin equivalente AG aún';
-    if(!items.length){list.innerHTML='<div class="empty"><div class="empty-icon">🔵</div><div class="empty-text">No hay discos Fase 3<br>encontrados aún</div></div>';return;}
-    list.innerHTML=items.sort(function(a,b){return(b[1].ts||0)-(a[1].ts||0);}).map(function(e){
-      return mkItem(e[0],e[1],'f3','disco','badge-f3','Manual','');
-    }).join('');
+
+  // FASE 2: Pastillas/Sensores encontrados CON match Alta Gama
   } else if(tab==='f2'){
-    var items=enc.filter(function(e){return esFase2(e[0]);});
-    var conAG=items.filter(function(e){return FASE2_AG.has(e[0]);});
-    var sinAG=items.filter(function(e){return !FASE2_AG.has(e[0]);});
-    count.textContent=items.length+' pastilla/sensor · '+conAG.length+' con equivalente AG';
+    var items=enc.filter(function(e){return FASE2_AG.has(e[0]);});
+    count.textContent=items.length+' pastilla/sensor con match AG · "Vender uno igual"';
+    if(!items.length){list.innerHTML='<div class="empty"><div class="empty-icon">🔲</div><div class="empty-text">No hay pastillas/sensores<br>con match AG aún</div></div>';return;}
+    list.innerHTML=items.sort(function(a,b){return(b[1].ts||0)-(a[1].ts||0);}).map(function(e){
+      return mkItem(e[0],e[1],'f1','pastilla','badge-f1',e[1].publicado?'✅ Pub.':'Listo','<span class="item-ag">AG ✓</span>');
+    }).join('');
+
+  // FASE 3: TODO sin match AG (discos + pastillas/sensores). Tras autodoc pueden migrar a F1/F2.
+  } else if(tab==='f3'){
+    var items=enc.filter(function(e){return !tieneMatchAG(e[0]);});
+    var discosSin=items.filter(function(e){return esDisco(e[0]);});
+    var pastSin=items.filter(function(e){return esPastillaSensor(e[0]);});
+    count.textContent=items.length+' sin match AG · pendiente autodoc.es (pueden migrar a F1/F2)';
     var html='';
-    if(conAG.length){
-      html+='<div class="placeholder-box ag"><strong>🟢 Con equivalente Alta Gama</strong><span>Publicar via "Vender uno igual"</span></div>';
-      html+=conAG.sort(function(a,b){return(b[1].ts||0)-(a[1].ts||0);}).map(function(e){
-        return mkItem(e[0],e[1],'f1','pastilla','badge-f1','AG listo','<span class="item-ag">AG ✓</span>');
+    if(discosSin.length){
+      html+='<div class="placeholder-box"><strong>💿 Discos sin equivalente AG</strong><span>⚠️ Tras scraping autodoc verificar si ganan match → mover a Fase 1</span></div>';
+      html+=discosSin.sort(function(a,b){return(b[1].ts||0)-(a[1].ts||0);}).map(function(e){
+        return mkItem(e[0],e[1],'f3','disco','badge-f3','Sin match','');
       }).join('');
     }
-    if(sinAG.length){
-      html+='<div class="placeholder-box"><strong>🟡 Sin equivalente AG</strong><span>Pendiente de cruce con autodoc</span></div>';
-      html+=sinAG.sort(function(a,b){return(b[1].ts||0)-(a[1].ts||0);}).map(function(e){
-        return mkItem(e[0],e[1],'f2','pastilla','badge-f2','Fase 2','');
+    if(pastSin.length){
+      html+='<div class="placeholder-box"><strong>🔲 Pastillas/Sensores sin match AG</strong><span>⚠️ Tras scraping autodoc verificar si ganan match → mover a Fase 2</span></div>';
+      html+=pastSin.sort(function(a,b){return(b[1].ts||0)-(a[1].ts||0);}).map(function(e){
+        return mkItem(e[0],e[1],'f3','pastilla','badge-f3','Sin match','');
       }).join('');
     }
-    if(!items.length)html='<div class="empty"><div class="empty-icon">🔲</div><div class="empty-text">No hay pastillas/sensores<br>encontrados aún</div></div>';
+    if(!items.length)html='<div class="empty"><div class="empty-icon">🟢</div><div class="empty-text">¡Todo tiene match AG!<br>No hay items sin cruzar</div></div>';
     list.innerHTML=html;
+
   } else if(tab==='pub'){
     count.textContent=pub.length+' publicacion'+(pub.length!==1?'es':'')+' en Mercado Libre';
     if(!pub.length){list.innerHTML='<div class="empty"><div class="empty-icon">⭐</div><div class="empty-text">Las publicaciones de ML<br>aparecen acá</div></div>';return;}
