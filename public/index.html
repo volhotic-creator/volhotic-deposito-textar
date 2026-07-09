@@ -2,63 +2,76 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <title>Panel Depósito · Volhotic</title>
 <style>
-  :root { color-scheme: light; }
+  :root { color-scheme: light; --green:#00a651; --yellow:#FFE600; --red:#e4002b; --blue:#0ea5e9; }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f4f4f4; color: #1a1a1a; }
 
   header {
-    background: #1a1a1a; color: #FFE600; padding: 14px 20px;
+    background: #1a1a1a; color: var(--yellow); padding: 14px 20px;
     display: flex; align-items: center; justify-content: space-between;
     font-weight: 800; font-size: 15px; letter-spacing: .3px;
   }
   header span { color: #aaa; font-size: 12px; font-weight: 400; }
   .dot { width: 8px; height: 8px; border-radius: 50%; background: #555; display: inline-block; margin-right: 6px; }
-  .dot.ok  { background: #00a651; }
-  .dot.err { background: #e4002b; }
-  .dot.syn { background: #FFE600; animation: pulse .8s ease-in-out infinite; }
+  .dot.ok  { background: var(--green); }
+  .dot.err { background: var(--red); }
+  .dot.syn { background: var(--yellow); animation: pulse .8s ease-in-out infinite; }
   @keyframes pulse { 0%,100%{opacity:1}50%{opacity:.3} }
 
   .stats {
     display: flex; gap: 8px; padding: 12px 14px;
-    border-bottom: 1px solid #e0e0e0; background: #fff;
-    flex-wrap: wrap;
+    border-bottom: 1px solid #e0e0e0; background: #fff; flex-wrap: wrap;
   }
-  .stat {
-    flex: 1; min-width: 70px; text-align: center;
-    padding: 8px 6px; border-radius: 8px;
-    background: #f9f9f9; border: 1px solid #e5e5e5;
-  }
+  .stat { flex: 1; min-width: 70px; text-align: center; padding: 8px 6px; border-radius: 8px; background: #f9f9f9; border: 1px solid #e5e5e5; }
   .stat .n { font-size: 24px; font-weight: 900; line-height: 1; }
   .stat .l { font-size: 10px; color: #888; font-weight: 600; margin-top: 3px; text-transform: uppercase; letter-spacing: .4px; }
-  .n-enc  { color: #00a651; }
-  .n-noe  { color: #e4002b; }
-  .n-pend { color: #9ca3af; }
-  .n-total{ color: #1a1a1a; }
+  .n-enc   { color: var(--green); }
+  .n-noe   { color: var(--red); }
+  .n-pend  { color: #9ca3af; }
+  .n-total { color: #1a1a1a; }
 
-  .last-update { padding: 5px 16px; font-size: 11px; color: #aaa; background: #fff; border-bottom: 2px solid #FFE600; }
+  .last-update { padding: 5px 16px; font-size: 11px; color: #aaa; background: #fff; border-bottom: 2px solid var(--yellow); }
 
-  .list { padding: 8px 12px 80px; display: flex; flex-direction: column; gap: 6px; }
+  /* Barra de búsqueda / registro */
+  .registro-bar {
+    background: #fff; padding: 10px 12px; border-bottom: 1px solid #e0e0e0;
+    display: flex; gap: 8px; align-items: center;
+  }
+  .registro-bar input {
+    flex: 1; border: 2px solid #e0e0e0; border-radius: 10px;
+    padding: 12px 14px; font-size: 16px; font-family: monospace; font-weight: 700;
+    text-transform: uppercase; outline: none; transition: border-color .2s;
+  }
+  .registro-bar input:focus { border-color: var(--green); }
+  .btn-buscar {
+    background: #1a1a1a; color: var(--yellow); border: none;
+    border-radius: 10px; padding: 12px 18px; font-size: 14px; font-weight: 800;
+    cursor: pointer; white-space: nowrap;
+  }
+  .btn-buscar:active { opacity: .75; }
+
+  .list { padding: 8px 12px 100px; display: flex; flex-direction: column; gap: 6px; }
 
   .item {
-    background: #fff; border-radius: 8px; padding: 11px 13px;
+    background: #fff; border-radius: 10px; padding: 13px 13px;
     display: flex; align-items: center; gap: 10px;
-    box-shadow: 0 1px 3px rgba(0,0,0,.06);
-    border-left: 4px solid #e0e0e0;
+    box-shadow: 0 1px 3px rgba(0,0,0,.06); border-left: 4px solid #e0e0e0;
   }
-  .item.f1  { border-left-color: #00a651; background: #f0fdf4; }
+  .item.f1  { border-left-color: var(--green); background: #f0fdf4; }
   .item.f3  { border-left-color: #9333ea; background: #faf5ff; }
   .item.f2  { border-left-color: #f59e0b; background: #fffbeb; }
-  .item.pub { border-left-color: #0ea5e9; background: #f0f9ff; }
-  .item.noe { border-left-color: #e4002b; background: #fff8f8; }
+  .item.pub { border-left-color: var(--blue); background: #f0f9ff; }
+  .item.noe { border-left-color: var(--red); background: #fff8f8; }
 
   .item-icon { font-size: 18px; flex-shrink: 0; }
   .item-body { flex: 1; min-width: 0; }
   .item-sku  { font-size: 13px; font-weight: 800; font-family: monospace; }
   .item-desc { font-size: 12px; color: #555; margin-top: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .item-ts   { font-size: 10px; color: #aaa; margin-top: 2px; }
+  .item-qty  { font-size: 11px; color: var(--green); font-weight: 700; margin-top: 2px; }
   .item-badge {
     font-size: 11px; font-weight: 700; padding: 4px 9px;
     border-radius: 20px; flex-shrink: 0; white-space: nowrap;
@@ -70,34 +83,85 @@
   .badge-noe { background: #fee2e2; color: #991b1b; }
 
   .item-link { font-size: 11px; color: #0369a1; text-decoration: none; margin-top: 3px; display: block; }
-  .item-link:hover { text-decoration: underline; }
 
   .empty { text-align: center; padding: 40px 20px; color: #bbb; font-size: 14px; }
-  .placeholder-msg { text-align: center; padding: 30px 20px; color: #aaa; font-size: 13px; background: #fff; border-radius: 10px; margin: 8px 0; }
+  .placeholder-msg { text-align: center; padding: 20px; color: #aaa; font-size: 13px; background: #fff; border-radius: 10px; margin: 8px 0; }
   .placeholder-msg strong { display: block; color: #888; margin-bottom: 6px; font-size: 15px; }
 
   .refresh-btn {
     position: fixed; bottom: 20px; right: 20px;
-    background: #1a1a1a; color: #FFE600; border: none;
+    background: #1a1a1a; color: var(--yellow); border: none;
     border-radius: 50%; width: 50px; height: 50px;
     font-size: 20px; cursor: pointer; box-shadow: 0 3px 10px rgba(0,0,0,.25);
+    z-index: 10;
   }
   .refresh-btn:active { transform: scale(.92); }
 
   .tabs {
-    display: flex; background: #fff; border-bottom: 2px solid #FFE600;
+    display: flex; background: #fff; border-bottom: 2px solid var(--yellow);
     overflow-x: auto; -webkit-overflow-scrolling: touch;
   }
   .tab {
     flex: 1; min-width: 80px; padding: 10px 4px;
     font-size: 11px; font-weight: 700; color: #999;
     border: none; background: none; cursor: pointer;
-    text-transform: uppercase; letter-spacing: .4px;
-    white-space: nowrap;
+    text-transform: uppercase; letter-spacing: .4px; white-space: nowrap;
   }
   .tab.on { color: #1a1a1a; border-bottom: 2px solid #1a1a1a; margin-bottom: -2px; }
 
   .section-count { font-size: 11px; color: #aaa; padding: 6px 14px 2px; }
+
+  /* Modal cantidad */
+  .modal-overlay {
+    display: none; position: fixed; inset: 0; background: rgba(0,0,0,.55);
+    z-index: 100; align-items: flex-end; justify-content: center;
+  }
+  .modal-overlay.open { display: flex; }
+  .modal {
+    background: #fff; border-radius: 20px 20px 0 0; padding: 24px 20px 40px;
+    width: 100%; max-width: 480px; animation: slideUp .25s ease;
+  }
+  @keyframes slideUp { from{transform:translateY(100%)} to{transform:translateY(0)} }
+  .modal-title { font-size: 18px; font-weight: 900; margin-bottom: 4px; }
+  .modal-desc  { font-size: 13px; color: #666; margin-bottom: 20px; }
+  .modal-sku   { font-family: monospace; font-size: 22px; font-weight: 900; color: var(--green); margin-bottom: 2px; }
+  .qty-label   { font-size: 13px; font-weight: 700; color: #555; margin-bottom: 8px; }
+  .qty-row     { display: flex; align-items: center; gap: 12px; margin-bottom: 20px; }
+  .qty-btn     {
+    width: 52px; height: 52px; border-radius: 50%; border: 2px solid #e0e0e0;
+    font-size: 26px; font-weight: 900; background: #f4f4f4; cursor: pointer; line-height: 1;
+  }
+  .qty-btn:active { background: #e0e0e0; }
+  .qty-input {
+    flex: 1; border: 2px solid #e0e0e0; border-radius: 12px;
+    padding: 14px; font-size: 32px; font-weight: 900; text-align: center;
+    font-family: monospace; outline: none;
+  }
+  .qty-input:focus { border-color: var(--green); }
+  .btn-confirmar {
+    width: 100%; padding: 18px; background: var(--green); color: #fff;
+    border: none; border-radius: 14px; font-size: 17px; font-weight: 900;
+    cursor: pointer; margin-bottom: 10px;
+  }
+  .btn-confirmar:active { opacity: .8; }
+  .btn-noencontrado {
+    width: 100%; padding: 14px; background: #fee2e2; color: var(--red);
+    border: none; border-radius: 14px; font-size: 14px; font-weight: 700;
+    cursor: pointer; margin-bottom: 10px;
+  }
+  .btn-cancelar {
+    width: 100%; padding: 12px; background: none; color: #999;
+    border: none; font-size: 14px; cursor: pointer;
+  }
+
+  /* Toast */
+  .toast {
+    position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%);
+    background: #1a1a1a; color: #fff; padding: 10px 20px; border-radius: 20px;
+    font-size: 13px; font-weight: 700; z-index: 200; opacity: 0; transition: opacity .3s;
+    white-space: nowrap;
+  }
+  .toast.show { opacity: 1; }
 </style>
 </head>
 <body>
@@ -115,119 +179,68 @@
 </div>
 <div class="last-update" id="last-update">Cargando...</div>
 
+<!-- Barra registro depósito -->
+<div class="registro-bar">
+  <input id="sku-input" type="text" placeholder="SKU (ej: 92106603)" maxlength="12"
+    oninput="this.value=this.value.toUpperCase()"
+    onkeydown="if(event.key==='Enter')abrirModal()">
+  <button class="btn-buscar" onclick="abrirModal()">Registrar</button>
+</div>
+
 <div class="tabs">
   <button class="tab on" onclick="setTab('f1')">🟢 Fase 1</button>
   <button class="tab"    onclick="setTab('f3')">🔵 Fase 3</button>
   <button class="tab"    onclick="setTab('f2')">🟡 Fase 2</button>
   <button class="tab"    onclick="setTab('pub')">⭐ Publicados</button>
 </div>
-
 <div class="section-count" id="section-count"></div>
 <div class="list" id="list"></div>
 <button class="refresh-btn" onclick="cargar()" title="Actualizar">↻</button>
 
-<script>
-const FB    = 'https://volhotic-textar-default-rtdb.firebaseio.com/volhotic/lista.json';
-const TOTAL = 131;
+<!-- Modal cantidad -->
+<div class="modal-overlay" id="modal-overlay" onclick="cerrarModal(event)">
+  <div class="modal">
+    <div class="modal-sku" id="modal-sku"></div>
+    <div class="modal-title" id="modal-title"></div>
+    <div class="modal-desc" id="modal-desc"></div>
+    <div class="qty-label">Cantidad encontrada</div>
+    <div class="qty-row">
+      <button class="qty-btn" onclick="cambiarQty(-1)">−</button>
+      <input class="qty-input" id="qty-input" type="number" value="1" min="1" max="999">
+      <button class="qty-btn" onclick="cambiarQty(+1)">+</button>
+    </div>
+    <button class="btn-confirmar" onclick="confirmarEncontrado()">✅ Confirmar encontrado</button>
+    <button class="btn-noencontrado" onclick="confirmarNoEncontrado()">❌ No encontrado</button>
+    <button class="btn-cancelar" onclick="cerrarModalBtn()">Cancelar</button>
+  </div>
+</div>
 
-// SKUs Fase 1: discos con equivalente en Alta Gama
+<div class="toast" id="toast"></div>
+
+<script>
+const FB_BASE = 'https://volhotic-textar-default-rtdb.firebaseio.com/volhotic/lista';
+const TOTAL   = 131;
+
 const FASE1 = new Set(["92228903","92159510","92140800","92140803","92224903","92229805","92120603","92120700","92120703","92120705","92174203","92098600","92106100","92106700","92106703","92105800","92105803","92160300","92238305","92160200","92160205","92082303","92082203","92121000","92121003","92106200","92106300","92137100","92072100","92275903","92143900","92083500","92109803","92088500","92090800","92104100","92117303","92057600","92057603","92132200","92132500","92132503","92132600","92120803","92140703","92120900","92120903","92083600","92083603","92132300","92229203","92159603","92163503","92282605","92282705","92282803","92151005","92119903","92163603","92115503","92105905","92106003","92057500","92106603"]);
-// SKUs Fase 2 con equivalente AG (pastillas confirmadas): publicar via "Vender uno igual"
 const FASE2_AG = new Set(["2313101","2355403","2391401"]);
 
-// SKUs Fase 2: pastillas y sensores
 function esFase2(sku) { return sku.startsWith('2') || sku.startsWith('98') || sku === '4226001'; }
-// SKUs Fase 3: discos SIN equivalente AG
 function esFase3(sku) { return sku.startsWith('92') && !FASE1.has(sku); }
 
 const INV = {"92082203":"Disco Del. 256mm Bora/Golf/Audi A1","92082303":"Disco Del. 280mm Golf/Bora/Audi A3","92106603":"Disco Del. 287mm Golf/Bora/Polo/Audi 97-02","92098500":"Disco Del. 312mm Bora/Polo/Audi A3","92098503":"Disco Del. 312mm Bora/Polo/Audi A3","92229203":"Disco Del. A4 A5 A6 Q5","92228903":"Disco Del. Amarok","92160205":"Disco Del. Audi A4 A5","92282605":"Disco Del. Audi A4 A5 A6 Q5","92282705":"Disco Del. Audi A4 A5 A6 Q5","92160200":"Disco Del. Audi A4 A5 Q5","92106700":"Disco Del. Audi A4 A6 M/V","92106703":"Disco Del. Audi A4 A6 M/V","92057600":"Disco Del. Audi A4 A6/Passat M/V","92106100":"Disco Del. Audi A4 A6/Passat M/V","92143900":"Disco Del. Audi A4 M/V","92083500":"Disco Del. Audi A4/Passat M/V","92132200":"Disco Del. Audi A6","92132300":"Disco Del. Audi A6","92161510":"Disco Del. Audi TT/Golf Der","92161410":"Disco Del. Audi TT/Golf Izq","92055603":"Disco Del. BMW E36/46","92217810":"Disco Del. BMW E60","92159603":"Disco Del. Clase C","92163503":"Disco Del. Clase C E/Slc/Slk","92151005":"Disco Del. Clase C/Clk","92119903":"Disco Del. Clase E/Cls","92238403":"Disco Del. E 81 87","92097203":"Disco Del. E46","92103103":"Disco Del. Ford (Australia)","92120700":"Disco Del. Golf/Vento/Audi A3/Seat Leon","92120703":"Disco Del. Golf/Vento/Audi A3/Seat Leon","92120705":"Disco Del. Golf/Vento/Audi A3/Seat Leon","92120803":"Disco Del. Golf/Vento/Audi A3 288mm","92027403":"Disco Del. Mercedes 190","92257503":"Disco Del. Mercedes Clase A B/Cla","92241603":"Disco Del. Mercedes Clase A B/Cla","92059403":"Disco Del. Mercedes Clase C","92106003":"Disco Del. Mercedes Clase C E/Clk","92105905":"Disco Del. Mercedes Clase C/Clk","92121000":"Disco Del. Passat 00-05","92121003":"Disco Del. Passat 00-05","92083600":"Disco Del. Passat 96-01","92083603":"Disco Del. Passat 96-01","92057603":"Disco Del. Passat/Audi A4 A6 M/V","92120603":"Disco Del. Passat/Vento/Audi A3","92275903":"Disco Del. Polo/Audi A1","92207110":"Disco Del. R8 RS5 365mm","92229805":"Disco Del. Seat Leon/Golf/Vento/Audi A3","92109803":"Disco Del. Sharan/Transporter","92121605":"Disco Del. Touareg Der","92121505":"Disco Del. Touareg Izq","92219605":"Disco Del. Touareg","92219505":"Disco Del. Touareg","92083800":"Disco Del. Transporter","92083700":"Disco Del. Transporter","92083703":"Disco Del. Transporter","92255403":"Disco Del/Tras 300mm Golf/Passat/Tiguan","92282803":"Disco Del/Tras Audi A4 A5 A6 Q5","92059503":"Disco Del/Tras Mercedes 124","92140703":"Disco Del/Tras Vento/Passat/Audi A3 Q3","92141200":"Disco Ford Focus II","92159300":"Disco Ford Galaxy/Mondeo","92159200":"Disco Ford Galaxy/S-Max","92109700":"Disco Ford Mondeo","92109703":"Disco Ford Mondeo","92109600":"Disco Ford Mondeo III","92088500":"Disco Tras. Audi A4 A6/Passat M/V","92238305":"Disco Tras. Audi A4 A5 A6 A7 Q5 Q7","92160300":"Disco Tras. Audi A4 A5 Q5","92106300":"Disco Tras. Audi A4 M/V","92072100":"Disco Tras. Audi A4 M/V","92137100":"Disco Tras. Audi A4 M/V","92106200":"Disco Tras. Audi A4 M/V","92174203":"Disco Tras. Audi A4/Passat M/V","92132600":"Disco Tras. Audi A6","92132500":"Disco Tras. Audi A6 04-11","92132503":"Disco Tras. Audi A6 04-11","92159510":"Disco Tras. Audi A6 06-11","92104100":"Disco Tras. Audi A6 97-05","92090800":"Disco Tras. Audi A6 97-05","92117303":"Disco Tras. Audi A6 97-05","92057500":"Disco Tras. Audi A6/Passat M/V","92122005":"Disco Tras. Audi Q7/Touareg","92261003":"Disco Tras. BMW","92133103":"Disco Tras. BMW E 81 87 90","92105803":"Disco Tras. Bora/Golf","92105800":"Disco Tras. Bora/Golf","92098600":"Disco Tras. Bora/Golf/Seat Leon Toledo","92072403":"Disco Tras. E46","92274103":"Disco Tras. Ford Transit","92121103":"Disco Tras. Golf/Vento/Audi A3","92120900":"Disco Tras. Golf/Vento/Audi A3/Seat Leon","92120903":"Disco Tras. Golf/Vento/Audi A3/Seat Leon","92032703":"Disco Tras. Mercedes 124/Clase C E","92132103":"Disco Tras. Mercedes Clase A B","92163603":"Disco Tras. Mercedes Clase C E","92115503":"Disco Tras. Mercedes Clase E","92056900":"Disco Tras. Mercedes Clase S","92032600":"Disco Tras. Mercedes Clase S/123","92032003":"Disco Tras. Mercedes Coupe 124/Clase E","92238703":"Disco Tras. Mini Couper","92175003":"Disco Tras. Mini Couper","92140803":"Disco Tras. Passat/Tiguan/Vento/Audi A3","92140800":"Disco Tras. Passat/Tiguan/Vento/Audi A3","92098200":"Disco Tras. Seat Cordoba/Polo","92074303":"Disco Tras. Sharan","92083900":"Disco Tras. Transporter","92224903":"Disco Tras. Vento/Passat/Audi A1 A3","4226001":"Pastillas De Freno (genéricas)","2313101":"Pastillas Del. Bora/Fox/Suran","2372301":"Pastillas Del. Ford Focus II III","2412301":"Pastillas Del. Ford Mondeo","2327904":"Pastillas Del. Ford Mondeo III","2413701":"Pastillas Tras. Ford Focus II","2453703":"Pastillas Tras. Ford Galaxy/Focus","2355701":"Pastillas Tras. Ford Mondeo III","2355403":"Pastillas Tras. Sharan","2391401":"Pastillas Tras. Vento","98043500":"Sensor BMW Del.","98042400":"Sensor BMW Del.","98047500":"Sensor BMW Del.","98030200":"Sensor Mini Del.","98052700":"Sensor Mini Del.","98044800":"Sensor Mini Del.","98048700":"Sensor Mercedes Del/Tras","98030700":"Sensor BMW Tras.","98047600":"Sensor BMW Tras.","98052100":"Sensor BMW/Mini Tras.","98044900":"Sensor Mini Tras.","98036300":"Sensor Mini Tras."};
 
 let datos = {};
-let tab = 'f1';
+let tab   = 'f1';
+let skuActual = null;
 
-function setDot(s) { document.getElementById('dot').className = 'dot ' + s; }
-
-function fmt(ts) {
-  if (!ts) return '';
-  const d = new Date(ts);
-  return d.toLocaleString('es-AR', {day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'});
-}
-
-function setTab(t) {
-  tab = t;
-  document.querySelectorAll('.tab').forEach(el => el.classList.remove('on'));
-  const idx = ['f1','f3','f2','pub'].indexOf(t);
-  document.querySelectorAll('.tab')[idx].classList.add('on');
-  render();
-}
-
-function render() {
-  const allEntries = Object.entries(datos);
-  const enc  = allEntries.filter(([,v]) => v.estado === 'enc');
-  const noe  = allEntries.filter(([,v]) => v.estado === 'noe');
-  const pub  = allEntries.filter(([,v]) => v.publicado === true);
-
-  document.getElementById('s-enc').textContent  = enc.length;
-  document.getElementById('s-noe').textContent  = noe.length;
-  document.getElementById('s-pend').textContent = Math.max(0, TOTAL - enc.length - noe.length);
-
-  const list  = document.getElementById('list');
-  const count = document.getElementById('section-count');
-
-  if (tab === 'f1') {
-    // Encontrados con equivalente Alta Gama
-    const items = enc.filter(([sku]) => FASE1.has(sku));
-    count.textContent = `${items.length} disco${items.length!==1?'s':''} listos para publicar via "Vender uno igual"`;
-    if (!items.length) { list.innerHTML = '<div class="empty">Aún no hay discos Fase 1 encontrados.</div>'; return; }
-    list.innerHTML = items
-      .sort((a,b) => (b[1].ts||0) - (a[1].ts||0))
-      .map(([sku, d]) => `
-      <div class="item f1">
-        <div class="item-icon">🟢</div>
-        <div class="item-body">
-          <div class="item-sku">SKU ${sku}</div>
-          <div class="item-desc">${INV[sku] || sku}</div>
-          ${d.ts ? `<div class="item-ts">Enc. ${fmt(d.ts)}</div>` : ''}
-          ${d.publicado ? `<a class="item-link" href="${d.ml_link||'#'}" target="_blank">🔗 Ver publicación ML</a>` : ''}
-        </div>
-        <span class="item-badge badge-f1">${d.publicado ? '✅ Pub.' : 'Listo'}</span>
-      </div>`).join('');
-  }
-  else if (tab === 'f3') {
-    const items = enc.filter(([sku]) => !FASE1.has(sku) && esFase3(sku));
-    count.textContent = `${items.length} disco${items.length!==1?'s':''} sin equivalente AG (publicación manual)`;
-    if (!items.length) { list.innerHTML = '<div class="empty">No hay discos Fase 3 encontrados aún.</div>'; return; }
-    list.innerHTML = items.sort((a,b)=>(b[1].ts||0)-(a[1].ts||0)).map(([sku,d])=>`
-      <div class="item f3"><div class="item-icon">🔵</div>
-        <div class="item-body"><div class="item-sku">SKU ${sku}</div>
-          <div class="item-desc">${INV[sku]||sku}</div>
-          ${d.ts?`<div class="item-ts">Enc. ${fmt(d.ts)}</div>`:''}
-        </div><span class="item-badge badge-f3">Manual</span></div>`).join('');
-  }
-  else if (tab === 'f2') {
-    const items = enc.filter(([sku]) => esFase2(sku));
-    const conAG = items.filter(([sku]) => FASE2_AG.has(sku));
-    const sinAG = items.filter(([sku]) => !FASE2_AG.has(sku));
-    count.textContent = `${items.length} pastilla/sensor encontrado${items.length!==1?'s':''} · ${conAG.length} con equivalente AG`;
-    const renderItem = ([sku,d]) => {
-      const tieneAG = FASE2_AG.has(sku);
-      return `<div class="item ${tieneAG?'f1':'f2'}"><div class="item-icon">${tieneAG?'🟢':'🟡'}</div>
-        <div class="item-body"><div class="item-sku">SKU ${sku}</div>
-          <div class="item-desc">${INV[sku]||sku}</div>
-          ${d.ts?`<div class="item-ts">Enc. ${fmt(d.ts)}</div>`:''}
-          ${tieneAG?`<div class="item-ts" style="color:#065f46;font-weight:700">✅ Equivalente AG disponible → "Vender uno igual"</div>`:''}
-        </div><span class="item-badge ${tieneAG?'badge-f1':'badge-f2'}">${tieneAG?'AG listo':'Fase 2'}</span></div>`;
-    };
-    list.innerHTML = (conAG.length ? '<div class="placeholder-msg" style="border-left:4px solid var(--green)"><strong>Con equivalente Alta Gama</strong>Publicar via "Vender uno igual".</div>' : '')
-      + conAG.sort((a,b)=>(b[1].ts||0)-(a[1].ts||0)).map(renderItem).join('')
-      + (sinAG.length ? '<div class="placeholder-msg"><strong>Sin equivalente AG (pendiente)</strong>Próximo cruce manual.</div>' : '')
-      + sinAG.sort((a,b)=>(b[1].ts||0)-(a[1].ts||0)).map(renderItem).join('');
-  }
-  else if (tab === 'pub') {
-    count.textContent = `${pub.length} publicacion${pub.length!==1?'es':''} en ML`;
-    if (!pub.length) { list.innerHTML = '<div class="placeholder-msg"><strong>Publicados en ML</strong>Aparecen aqui cuando se publique.</div>'; return; }
-    list.innerHTML = pub.sort((a,b)=>(b[1].publicado_ts||0)-(a[1].publicado_ts||0)).map(([sku,d])=>`
-      <div class="item pub"><div class="item-icon">⭐</div>
-        <div class="item-body"><div class="item-sku">SKU ${sku}</div>
-          <div class="item-desc">${INV[sku]||sku}</div>
-          ${
+/* ── MODAL ── */
+function abrirModal() {
+  const raw = document.getElementById('sku-input').value.trim().toUpperCase();
+  if (!raw) { showToast('Ingresá un SKU'); return; }
+  skuActual = raw;
+  const desc = INV[raw];
+  const overlay = document.getElementById('modal-overlay');
+  document.getElementById('modal-sku').textContent = 'SKU ' + raw;
+  if (desc) {
+    document.getElementById('modal-title').textContent = desc;
+    document.getElementById('modal-desc').textContent  = FASE1.has(raw) ? '🟢 Fase 1 — tiene equivalente Alta Gama' : FASE2_AG.has(raw) ? '🟢 Fase 2 AG — tiene equivalen
