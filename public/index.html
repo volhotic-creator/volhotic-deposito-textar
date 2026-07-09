@@ -20,7 +20,7 @@ header{background:var(--dark);padding:0 16px;display:flex;align-items:center;jus
 .header-time{color:#aaa;font-size:11px}
 
 /* STATS BANNER */
-.stats-banner{background:linear-gradient(135deg,#1a1a1a 0%,#2d2d2d 100%);padding:14px 16px;display:grid;grid-template-columns:repeat(4,1fr);gap:6px;border-bottom:3px solid var(--yellow)}
+.stats-banner{background:linear-gradient(135deg,#1a1a1a 0%,#2d2d2d 100%);padding:14px 16px;display:grid;grid-template-columns:repeat(3,1fr);gap:6px;border-bottom:3px solid var(--yellow)}
 .stat-card{text-align:center;padding:8px 4px;border-radius:10px;background:rgba(255,255,255,.05)}
 .stat-n{font-size:26px;font-weight:900;line-height:1;font-variant-numeric:tabular-nums}
 .stat-l{font-size:9px;color:#888;font-weight:700;margin-top:4px;text-transform:uppercase;letter-spacing:.5px}
@@ -166,7 +166,6 @@ header{background:var(--dark);padding:0 16px;display:flex;align-items:center;jus
 <!-- Stats -->
 <div class="stats-banner">
   <div class="stat-card"><div class="stat-n n-enc" id="s-enc">—</div><div class="stat-l">Enc.</div></div>
-  <div class="stat-card"><div class="stat-n n-noe" id="s-noe">—</div><div class="stat-l">No enc.</div></div>
   <div class="stat-card"><div class="stat-n n-pend" id="s-pend">—</div><div class="stat-l">Pend.</div></div>
   <div class="stat-card"><div class="stat-n n-total">131</div><div class="stat-l">Total</div></div>
 </div>
@@ -372,11 +371,9 @@ function esPastillaSensor(sku){return sku.startsWith('2')||sku.startsWith('98')|
 function render(){
   var all=Object.entries(datos);
   var enc=all.filter(function(e){return e[1].estado==='enc';});
-  var noe=all.filter(function(e){return e[1].estado==='noe';});
   var pub=all.filter(function(e){return e[1].publicado===true;});
   document.getElementById('s-enc').textContent=enc.length;
-  document.getElementById('s-noe').textContent=noe.length;
-  document.getElementById('s-pend').textContent=Math.max(0,TOTAL-enc.length-noe.length);
+  document.getElementById('s-pend').textContent=Math.max(0,TOTAL-enc.length);
   var list=document.getElementById('list');
   var count=document.getElementById('section-count');
 
