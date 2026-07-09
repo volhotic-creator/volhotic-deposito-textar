@@ -100,6 +100,7 @@ header{background:var(--dark);padding:0 16px;display:flex;align-items:center;jus
 
 /* MODAL REGISTRAR */
 .overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:100;align-items:flex-end;justify-content:center}
+.sheet,.rst-sheet{transition:transform .15s ease}
 .overlay.open{display:flex}
 .sheet{background:#fff;border-radius:24px 24px 0 0;padding:20px 20px 48px;width:100%;max-width:480px;animation:up .22s cubic-bezier(.34,1.56,.64,1)}
 @keyframes up{from{transform:translateY(100%)}to{transform:translateY(0)}}
@@ -453,16 +454,16 @@ function render(){
 
   if(tab==='f1'){
     var items=enc.filter(function(e){return FASE1.has(e[0]);});
-    count.textContent=items.length+' disco'+(items.length!==1?'s':'')+' con match AG — listos para publicar';
-    if(!items.length){list.innerHTML='<div class="empty"><div class="empty-ico">'+SVG_DISCO_LG+'</div><div class="empty-txt">Cristian aún no encontró<br>discos con match AG</div></div>';return;}
+    count.textContent=items.length+' disco'+(items.length!==1?'s':'')+' encontrado'+(items.length!==1?'s':'')+' · con publicación disponible';
+    if(!items.length){list.innerHTML='<div class="empty"><div class="empty-ico">'+SVG_DISCO_LG+'</div><div class="empty-txt">Todavía no hay discos<br>registrados en esta sección</div></div>';return;}
     list.innerHTML=items.sort(function(a,b){return(b[1].ts||0)-(a[1].ts||0);}).map(function(e){
       return mkItem(e[0],e[1],'bar-f1','disco','badge-f1',e[1].publicado?'✅ Publicado':'Listo','');
     }).join('');
 
   } else if(tab==='f2'){
     var items=enc.filter(function(e){return FASE2_AG.has(e[0]);});
-    count.textContent=items.length+' pastilla/sensor con match AG — listos para publicar';
-    if(!items.length){list.innerHTML='<div class="empty"><div class="empty-ico">'+SVG_PASTILLA_LG+'</div><div class="empty-txt">No hay pastillas/sensores<br>con match AG aún</div></div>';return;}
+    count.textContent=items.length+' pastilla'+(items.length!==1?'s':'')+'/sensor encontrado'+(items.length!==1?'s':'')+' · con publicación disponible';
+    if(!items.length){list.innerHTML='<div class="empty"><div class="empty-ico">'+SVG_PASTILLA_LG+'</div><div class="empty-txt">Todavía no hay pastillas<br>ni sensores registrados acá</div></div>';return;}
     list.innerHTML=items.sort(function(a,b){return(b[1].ts||0)-(a[1].ts||0);}).map(function(e){
       return mkItem(e[0],e[1],'bar-f2','pastilla','badge-f2',e[1].publicado?'✅ Publicado':'Listo','');
     }).join('');
@@ -471,26 +472,26 @@ function render(){
     var items=enc.filter(function(e){return !tieneMatchAG(e[0]);});
     var discosSin=items.filter(function(e){return esDisco(e[0]);});
     var pastSin=items.filter(function(e){return esPastSens(e[0]);});
-    count.textContent=items.length+' sin match AG · tras autodoc pueden migrar a F1/F2';
+    count.textContent=items.length+' producto'+(items.length!==1?'s':'')+' encontrado'+(items.length!==1?'s':'')+' · pendiente de cruce (se resuelve con autodoc)';
     var html='';
     if(discosSin.length){
-      html+='<div class="phase-label">💿 Discos sin equivalente AG</div>';
+      html+='<div class="phase-label">💿 Discos · sin publicación disponible aún</div>';
       html+=discosSin.sort(function(a,b){return(b[1].ts||0)-(a[1].ts||0);}).map(function(e){
         return mkItem(e[0],e[1],'bar-f3','disco','badge-f3','Sin match','');
       }).join('');
     }
     if(pastSin.length){
-      html+='<div class="phase-label">🔲 Pastillas/Sensores sin match AG</div>';
+      html+='<div class="phase-label">🔲 Pastillas y sensores · sin publicación disponible aún</div>';
       html+=pastSin.sort(function(a,b){return(b[1].ts||0)-(a[1].ts||0);}).map(function(e){
         return mkItem(e[0],e[1],'bar-f3','pastilla','badge-f3','Sin match','');
       }).join('');
     }
-    if(!items.length)html='<div class="empty"><div class="empty-ico">🎉</div><div class="empty-txt">¡Todo tiene match AG!<br>Fase 3 vacía</div></div>';
+    if(!items.length)html='<div class="empty"><div class="empty-ico">🎉</div><div class="empty-txt">No hay productos<br>en esta sección</div></div>';
     list.innerHTML=html;
 
   } else if(tab==='pub'){
-    count.textContent=pub.length+' publicacion'+(pub.length!==1?'es':'')+' en Mercado Libre';
-    if(!pub.length){list.innerHTML='<div class="empty"><div class="empty-ico"><svg width="48" height="48" viewBox="0 0 36 36"><polygon points="18,3 22,14 34,14 24,21 28,33 18,26 8,33 12,21 2,14 14,14" fill="none" stroke="#ccc" stroke-width="2" stroke-linejoin="round"/></svg></div><div class="empty-txt">Las publicaciones de ML<br>aparecen acá</div></div>';return;}
+    count.textContent=pub.length+' publicacion'+(pub.length!==1?'es':'')+' activa'+(pub.length!==1?'s':'')+' en Mercado Libre';
+    if(!pub.length){list.innerHTML='<div class="empty"><div class="empty-ico"><svg width="48" height="48" viewBox="0 0 36 36"><polygon points="18,3 22,14 34,14 24,21 28,33 18,26 8,33 12,21 2,14 14,14" fill="none" stroke="#ccc" stroke-width="2" stroke-linejoin="round"/></svg></div><div class="empty-txt">Cuando se publique un producto<br>aparece acá</div></div>';return;}
     list.innerHTML=pub.sort(function(a,b){return(b[1].publicado_ts||0)-(a[1].publicado_ts||0);}).map(function(e){
       return mkItem(e[0],e[1],'bar-pub','pub','badge-pub','En ML','');
     }).join('');
@@ -509,6 +510,20 @@ function cargar(){
   }).catch(function(){setDot('err');document.getElementById('last-update').textContent='Sin conexión · reintentando...';});
 }
 cargar();setInterval(cargar,30000);
+
+// Fix teclado virtual: sube el sheet para que no tape el input
+(function(){
+  if(!window.visualViewport)return;
+  function onViewport(){
+    var kbH=window.innerHeight-window.visualViewport.height;
+    var sheets=document.querySelectorAll('.sheet,.rst-sheet');
+    sheets.forEach(function(s){
+      s.style.transform=kbH>50?'translateY(-'+Math.min(kbH,320)+'px)':'';
+    });
+  }
+  window.visualViewport.addEventListener('resize',onViewport);
+  window.visualViewport.addEventListener('scroll',onViewport);
+})();
 </script>
 </body>
 </html>
