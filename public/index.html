@@ -100,7 +100,6 @@ header{background:var(--dark);padding:0 16px;display:flex;align-items:center;jus
 
 /* MODAL REGISTRAR */
 .overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:100;align-items:flex-end;justify-content:center}
-.sheet,.rst-sheet{transition:transform .15s ease}
 .overlay.open{display:flex}
 .sheet{background:#fff;border-radius:24px 24px 0 0;padding:20px 20px 48px;width:100%;max-width:480px;animation:up .22s cubic-bezier(.34,1.56,.64,1)}
 @keyframes up{from{transform:translateY(100%)}to{transform:translateY(0)}}
@@ -375,7 +374,7 @@ function abrirModal(){
   var fe=document.getElementById('m-fase');fe.textContent=fi.txt;fe.className='sheet-fase '+fi.cls;
   document.getElementById('qty-input').value=1;
   document.getElementById('modal-reg').classList.add('open');
-  setTimeout(function(){document.getElementById('qty-input').select();},300);
+  setTimeout(function(){var inp=document.getElementById('qty-input');inp.select();inp.scrollIntoView({behavior:'smooth',block:'center'});},350);
 }
 function cerrarModal(e){if(e.target===document.getElementById('modal-reg'))cerrarModalBtn();}
 function cerrarModalBtn(){document.getElementById('modal-reg').classList.remove('open');document.getElementById('sku-input').value='';skuActual=null;}
@@ -511,19 +510,21 @@ function cargar(){
 }
 cargar();setInterval(cargar,30000);
 
-// Fix teclado virtual: sube el sheet para que no tape el input
+// Teclado virtual: la overlay se encoge al alto visible → sheet sube sola
 (function(){
   if(!window.visualViewport)return;
-  function onViewport(){
-    var kbH=window.innerHeight-window.visualViewport.height;
-    var sheets=document.querySelectorAll('.sheet,.rst-sheet');
-    sheets.forEach(function(s){
-      s.style.transform=kbH>50?'translateY(-'+Math.min(kbH,320)+'px)':'';
+  function ajustar(){
+    var h=window.visualViewport.height;
+    document.querySelectorAll('.overlay').forEach(function(el){
+      el.style.height=h+'px';
+      el.style.top=(window.innerHeight-h)+'px';
     });
   }
-  window.visualViewport.addEventListener('resize',onViewport);
-  window.visualViewport.addEventListener('scroll',onViewport);
+  window.visualViewport.addEventListener('resize',ajustar);
+  window.visualViewport.addEventListener('scroll',ajustar);
+  ajustar();
 })();
+
 </script>
 </body>
 </html>
