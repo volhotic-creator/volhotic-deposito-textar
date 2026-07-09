@@ -85,6 +85,8 @@ header{background:var(--dark);padding:0 16px;display:flex;align-items:center;jus
 .badge-f2{background:#fef3c7;color:#92400e}
 .badge-pub{background:#e0f2fe;color:#0369a1}
 .item-link{font-size:11px;color:#0369a1;text-decoration:none;margin-top:3px;display:inline-block}
+.btn-reset{background:none;border:none;font-size:11px;color:#d1d5db;cursor:pointer;padding:4px 0;margin-top:2px;display:block;text-align:left}
+.btn-reset:active{color:var(--red)}
 
 .empty{text-align:center;padding:50px 20px;color:#ccc}
 .empty-icon{font-size:48px;margin-bottom:12px}
@@ -342,6 +344,7 @@ function mkItem(sku,d,accentCls,thumbCls,badgeCls,badgeTxt,extra){
     +(extra||'')
     +'</div>'
     +(d.ml_link?'<a class="item-link" href="'+d.ml_link+'" target="_blank">🔗 Ver publicación ML</a>':'')
+    +'<button class="btn-reset" onclick="event.stopPropagation();restablecer(\''+sku+'\')" title="Corregir error de carga">↩ Restablecer</button>'
     +'</div>'
     +'<span class="item-badge '+badgeCls+'">'+badgeTxt+'</span>'
     +'</div></div>';
@@ -424,6 +427,12 @@ function render(){
       return mkItem(e[0],e[1],'pub','pub-t','badge-pub','En ML','');
     }).join('');
   }
+}
+function restablecer(sku){
+  if(!confirm('¿Borrar registro de '+sku+'?'))return;
+  fetch(FB+'/'+sku+'.json',{method:'DELETE'})
+    .then(function(){showToast('↩ '+sku+' restablecido');setTimeout(cargar,400);})
+    .catch(function(){showToast('Error al restablecer');});
 }
 function cargar(){
   setDot('syn');
