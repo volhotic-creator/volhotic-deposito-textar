@@ -33,7 +33,7 @@ header{background:var(--b);color:var(--y);padding:0 16px;height:52px;display:fle
 #search::placeholder{color:#bbb}
 .search-clear{background:none;border:none;color:#bbb;cursor:pointer;font-size:20px;padding:0 2px;line-height:1;display:none}
 .tabs{display:flex;background:#fff;border-bottom:2px solid #e8e8e8;overflow-x:auto;-webkit-overflow-scrolling:touch}
-.tab{flex:1;min-width:72px;padding:13px 4px 11px;font-size:10px;font-weight:800;color:#aaa;border:none;background:none;cursor:pointer;text-transform:uppercase;letter-spacing:.5px;white-space:nowraw;position:relative;transition:color .15s}
+.tab{flex:1;min-width:72px;padding:13px 4px 11px;font-size:10px;font-weight:800;color:#aaa;border:none;background:none;cursor:pointer;text-transform:uppercase;letter-spacing:.5px;white-space:nowrap;position:relative;transition:color .15s}
 .tab.on{color:var(--b)}
 .tab.on::after{content:'';position:absolute;bottom:0;left:8px;right:8px;height:2.5px;background:var(--y);border-radius:2px}
 .tab-badge{display:inline-block;background:var(--y);color:var(--b);font-size:9px;font-weight:900;border-radius:10px;padding:1px 5px;margin-left:3px;vertical-align:middle}
@@ -280,7 +280,7 @@ function render(){
     const actions=enc
       ?'<button class="btn-reset" onclick="openResetModal(\''+sku+'\')">&#8634; Reset</button>'
       :'<button class="btn-enc" onclick="openEncModal(\''+sku+'\')">Encontrado</button>';
-    return '<div class="'+cls+'"><div class="item-body"><div class="item-sku">++sku+'</div><div class="item-desc">'+(INV[sku]||'')+'</div><div class="item-meta">'+meta+'</div>'+mlLink+'</div><div class="item-actions"><span class="'+badgeClass(fase)+'">'+badgeLabel(fase)+'</span>'+actions+'</div></div>';
+    return '<div class="'+cls+'"><div class="item-body"><div class="item-sku">'+sku+'</div><div class="item-desc">'+(INV[sku]||'')+'</div><div class="item-meta">'+meta+'</div>'+mlLink+'</div><div class="item-actions"><span class="'+badgeClass(fase)+'">'+badgeLabel(fase)+'</span>'+actions+'</div></div>';
   }).join('');
 }
 
