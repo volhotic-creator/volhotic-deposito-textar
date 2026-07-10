@@ -2,529 +2,142 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Panel Depósito · Volhotic</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Panel Deposito Volhotic</title>
 <style>
-:root{--green:#00a651;--yellow:#FFE600;--red:#e4002b;--blue:#0ea5e9;--dark:#1a1a1a;--gray:#f4f4f4}
-*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#efefef;color:var(--dark);min-height:100vh}
-
-/* HEADER */
-header{background:var(--dark);padding:0 16px;display:flex;align-items:center;justify-content:space-between;height:54px;position:sticky;top:0;z-index:30;box-shadow:0 2px 8px rgba(0,0,0,.4)}
-.header-left{display:flex;align-items:center;gap:10px}
-.logo-badge{background:var(--yellow);color:var(--dark);font-size:10px;font-weight:900;padding:2px 7px;border-radius:4px;letter-spacing:.5px}
-.header-title{color:#fff;font-weight:800;font-size:15px}
-.dot{width:9px;height:9px;border-radius:50%;background:#555;flex-shrink:0}
-.dot.ok{background:var(--green)}.dot.err{background:var(--red)}.dot.syn{background:var(--yellow);animation:pulse .8s ease-in-out infinite}
+:root{color-scheme:light}*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f4f4f4;color:#1a1a1a}
+header{background:#1a1a1a;color:#FFE600;padding:14px 20px;display:flex;align-items:center;justify-content:space-between;font-weight:800;font-size:15px}
+header span{color:#aaa;font-size:12px;font-weight:400}
+.dot{width:8px;height:8px;border-radius:50%;background:#555;display:inline-block;margin-right:6px}
+.dot.ok{background:#00a651}.dot.err{background:#e4002b}.dot.syn{background:#FFE600;animation:pulse .8s infinite}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
-.header-time{color:#777;font-size:11px}
-
-/* TEXTAR STRIP */
-.textar-strip{background:var(--yellow);padding:10px 16px;display:flex;align-items:center;justify-content:space-between;border-bottom:2px solid #d4b800}
-.textar-brand{display:flex;flex-direction:column}
-.textar-wordmark{font-size:22px;font-weight:900;color:var(--dark);letter-spacing:2.5px;font-style:italic}
-.textar-sub{font-size:8px;font-weight:700;color:var(--dark);letter-spacing:3px;opacity:.65}
-.textar-chips{display:flex;gap:6px;align-items:center}
-.chip{background:rgba(0,0,0,.1);border-radius:20px;padding:5px 9px;font-size:10px;font-weight:800;color:var(--dark);display:flex;align-items:center;gap:5px}
-.chip svg{flex-shrink:0}
-
-/* STATS */
-.stats{background:linear-gradient(135deg,#1a1a1a,#2a2a2a);padding:12px 14px;display:grid;grid-template-columns:repeat(3,1fr);gap:8px;border-bottom:3px solid var(--yellow)}
-.stat{text-align:center;padding:8px 4px;border-radius:10px;background:rgba(255,255,255,.05)}
-.stat-n{font-size:28px;font-weight:900;line-height:1;font-variant-numeric:tabular-nums}
-.stat-l{font-size:9px;color:#777;font-weight:700;margin-top:4px;text-transform:uppercase;letter-spacing:.5px}
-.n-enc{color:var(--green)}.n-pend{color:#9ca3af}.n-total{color:#fff}
-.update-bar{background:#fff;padding:5px 14px;font-size:11px;color:#aaa;border-bottom:1px solid #e5e5e5;display:flex;align-items:center;justify-content:space-between}
-
-/* SEARCH */
-.search-section{background:#fff;padding:12px 14px 10px;border-bottom:3px solid var(--yellow)}
-.search-label{font-size:11px;font-weight:800;color:#999;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px}
-.search-row{display:flex;gap:8px}
-.search-wrap{position:relative;flex:1}
-.search-input{width:100%;border:2.5px solid #e0e0e0;border-radius:14px;padding:15px 16px;font-size:18px;font-family:monospace;font-weight:800;outline:none;transition:border-color .2s;background:#fafafa;letter-spacing:.5px}
-.search-input:focus{border-color:var(--green);background:#fff}
-.search-input::placeholder{color:#ccc;font-size:14px;font-weight:400;font-family:inherit;letter-spacing:0}
-.sugerencias{position:absolute;top:calc(100% + 6px);left:0;right:0;background:#fff;border:2px solid var(--green);border-radius:14px;z-index:50;max-height:240px;overflow-y:auto;box-shadow:0 10px 30px rgba(0,0,0,.15);display:none}
-.sug-item{padding:13px 14px;cursor:pointer;border-bottom:1px solid #f3f3f3;display:flex;align-items:center;gap:10px;min-height:62px}
-.sug-item:last-child{border-bottom:none}
-.sug-item:active{background:#f0fdf4}
-.sug-ico{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.sug-ico.disco{background:#f0fdf4}.sug-ico.pastilla{background:#fffbeb}.sug-ico.sensor{background:#f0f9ff}
-.sug-info{flex:1;min-width:0}
-.sug-sku{font-family:monospace;font-weight:900;font-size:14px;color:var(--green)}
-.sug-desc{font-size:12px;color:#666;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.sug-badge{font-size:10px;font-weight:800;padding:3px 8px;border-radius:10px;flex-shrink:0}
-.btn-reg{background:var(--dark);color:var(--yellow);border:none;border-radius:14px;padding:0 18px;font-size:14px;font-weight:900;cursor:pointer;white-space:nowrap;min-height:56px;min-width:100px}
-.btn-reg:active{opacity:.8}
-
-/* TABS */
-.tabs{display:flex;background:#fff;border-bottom:2px solid var(--yellow)}
-.tab-btn{flex:1;padding:10px 4px 8px;font-size:10px;font-weight:800;color:#bbb;border:none;background:none;cursor:pointer;text-transform:uppercase;letter-spacing:.3px;display:flex;flex-direction:column;align-items:center;gap:3px;transition:color .15s;min-height:56px;justify-content:center}
-.tab-btn.on{color:var(--dark);border-bottom:3px solid var(--dark);margin-bottom:-2px}
-.tab-btn svg{opacity:.5}.tab-btn.on svg{opacity:1}
-.section-count{font-size:11px;color:#999;padding:8px 14px 2px;background:#efefef;font-weight:600}
-
-/* LIST */
-.list{padding:8px 12px 120px;display:flex;flex-direction:column;gap:8px}
-.phase-label{background:#e8e8e8;border-radius:10px;padding:8px 12px;font-size:11px;font-weight:800;color:#666;text-transform:uppercase;letter-spacing:.5px;margin-top:4px}
-.phase-label.ag{background:#d1fae5;color:#065f46}
-
-/* ITEM CARD */
-.item{background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.07);border:1px solid #ebebeb;display:flex}
-.item-bar{width:5px;flex-shrink:0}
-.bar-f1{background:var(--green)}.bar-f2{background:#f59e0b}.bar-f3{background:var(--blue)}.bar-pub{background:var(--blue)}
-.item-body{flex:1;padding:12px 12px 12px 10px;display:flex;align-items:center;gap:10px;min-width:0}
-.item-ico{width:46px;height:46px;border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.item-ico.disco{background:#f0fdf4}.item-ico.pastilla{background:#fffbeb}.item-ico.sensor{background:#f0f9ff}.item-ico.pub{background:#e0f2fe}
-.item-info{flex:1;min-width:0}
-.item-sku{font-size:11px;font-weight:800;font-family:monospace;color:#aaa;letter-spacing:.3px}
-.item-name{font-size:14px;font-weight:800;color:var(--dark);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.item-meta{display:flex;align-items:center;gap:5px;margin-top:5px;flex-wrap:wrap}
-.tag{font-size:11px;font-weight:800;padding:3px 8px;border-radius:8px}
-.tag-qty{background:#f0fdf4;color:#065f46}
-.tag-ag{background:#d1fae5;color:#065f46}
-.tag-ts{background:#f5f5f5;color:#aaa;font-weight:600}
-.item-right{display:flex;flex-direction:column;align-items:flex-end;justify-content:space-between;padding:10px 12px 10px 0;gap:8px;flex-shrink:0}
-.item-badge{font-size:11px;font-weight:800;padding:5px 10px;border-radius:10px;white-space:nowrap}
-.badge-f1{background:#d1fae5;color:#065f46}.badge-f2{background:#fef3c7;color:#92400e}.badge-f3{background:#e0f2fe;color:#0369a1}.badge-pub{background:#e0f2fe;color:#0369a1}
-.btn-rst{background:#fff;border:1.5px solid #e5e5e5;border-radius:10px;padding:5px 10px;font-size:11px;color:#d1d5db;cursor:pointer;font-weight:700;display:flex;align-items:center;gap:4px;white-space:nowrap}
-.btn-rst:active{border-color:var(--red);color:var(--red)}
-
-.empty{text-align:center;padding:60px 20px;color:#ccc}
-.empty-ico{font-size:52px;margin-bottom:12px}
-.empty-txt{font-size:15px;font-weight:600;color:#bbb}
-
-/* FAB */
-.fab{position:fixed;bottom:24px;right:16px;background:var(--dark);color:var(--yellow);border:none;border-radius:50%;width:54px;height:54px;font-size:24px;cursor:pointer;box-shadow:0 4px 16px rgba(0,0,0,.3);z-index:20;display:flex;align-items:center;justify-content:center}
-.fab:active{transform:scale(.92)}
-
-/* MODAL REGISTRAR */
-.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:100;align-items:flex-end;justify-content:center}
-.overlay.open{display:flex}
-.sheet{background:#fff;border-radius:24px 24px 0 0;padding:20px 20px 48px;width:100%;max-width:480px;animation:up .22s cubic-bezier(.34,1.56,.64,1)}
-@keyframes up{from{transform:translateY(100%)}to{transform:translateY(0)}}
-.sheet-handle{width:36px;height:4px;background:#e5e5e5;border-radius:2px;margin:0 auto 20px}
-.sheet-header{display:flex;align-items:center;gap:14px;margin-bottom:20px}
-.sheet-ico{width:60px;height:60px;border-radius:16px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
-.sheet-ico.disco{background:#f0fdf4}.sheet-ico.pastilla{background:#fffbeb}.sheet-ico.sensor{background:#f0f9ff}
-.sheet-sku{font-family:monospace;font-size:13px;font-weight:800;color:#aaa;letter-spacing:.5px}
-.sheet-name{font-size:18px;font-weight:900;color:var(--dark);line-height:1.2;margin-top:3px}
-.sheet-fase{font-size:12px;font-weight:800;margin-top:6px;padding:4px 10px;border-radius:8px;display:inline-block}
-.sheet-fase.f1{background:#d1fae5;color:#065f46}
-.sheet-fase.f2{background:#fef3c7;color:#92400e}
-.sheet-fase.f3{background:#e0f2fe;color:#0369a1}
-.qty-label{font-size:13px;font-weight:800;color:#888;text-transform:uppercase;letter-spacing:.5px;margin-bottom:12px}
-.qty-row{display:flex;align-items:center;gap:14px;margin-bottom:22px}
-.qty-btn{width:62px;height:62px;border-radius:50%;border:2px solid #e5e5e5;font-size:32px;font-weight:900;background:#f9f9f9;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1}
-.qty-btn:active{background:#eee;transform:scale(.93)}
-.qty-input{flex:1;border:2px solid #e0e0e0;border-radius:16px;padding:14px;font-size:38px;font-weight:900;text-align:center;font-family:monospace;outline:none}
-.qty-input:focus{border-color:var(--green)}
-.btn-confirm{width:100%;padding:18px;background:var(--green);color:#fff;border:none;border-radius:16px;font-size:18px;font-weight:900;cursor:pointer;margin-bottom:12px;display:flex;align-items:center;justify-content:center;gap:10px}
-.btn-confirm:active{opacity:.85}
-.btn-cancel{width:100%;padding:13px;background:none;color:#bbb;border:none;font-size:15px;cursor:pointer;font-weight:600}
-
-/* MODAL RESTABLECER */
-.rst-sheet{background:#fff;border-radius:24px 24px 0 0;padding:24px 20px 48px;width:100%;max-width:480px;animation:up .22s cubic-bezier(.34,1.56,.64,1)}
-.rst-ico-wrap{text-align:center;margin-bottom:16px}
-.rst-ico-circle{width:64px;height:64px;border-radius:50%;background:#fef2f2;display:inline-flex;align-items:center;justify-content:center;font-size:28px}
-.rst-title{text-align:center;font-size:19px;font-weight:900;color:var(--dark);margin-bottom:6px}
-.rst-sub{text-align:center;font-size:14px;color:#999;margin-bottom:28px;font-weight:600;line-height:1.4}
-.rst-sku-pill{text-align:center;font-family:monospace;font-size:16px;font-weight:900;background:#f5f5f5;color:var(--dark);padding:8px 20px;border-radius:12px;display:inline-block;margin:0 auto 24px;display:block}
-.btn-rst-confirm{width:100%;padding:17px;background:var(--red);color:#fff;border:none;border-radius:16px;font-size:17px;font-weight:900;cursor:pointer;margin-bottom:12px}
-.btn-rst-cancel{width:100%;padding:14px;background:#f5f5f5;color:var(--dark);border:none;border-radius:16px;font-size:16px;font-weight:800;cursor:pointer}
-.btn-rst-confirm:active{opacity:.85}.btn-rst-cancel:active{opacity:.7}
-
-/* TOAST */
-.toast{position:fixed;bottom:100px;left:50%;transform:translateX(-50%) translateY(10px);background:var(--dark);color:#fff;padding:12px 24px;border-radius:24px;font-size:14px;font-weight:700;z-index:200;opacity:0;transition:all .25s;white-space:nowrap;pointer-events:none}
-.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.stats{display:flex;gap:8px;padding:12px 14px;border-bottom:1px solid #e0e0e0;background:#fff;flex-wrap:wrap}
+.stat{flex:1;min-width:70px;text-align:center;padding:8px 6px;border-radius:8px;background:#f9f9f9;border:1px solid #e5e5e5}
+.stat .n{font-size:24px;font-weight:900;line-height:1}
+.stat .l{font-size:10px;color:#888;font-weight:600;margin-top:3px;text-transform:uppercase;letter-spacing:.4px}
+.n-enc{color:#00a651}.n-noe{color:#e4002b}.n-pend{color:#9ca3af}.n-total{color:#1a1a1a}
+.last-update{padding:5px 16px;font-size:11px;color:#aaa;background:#fff;border-bottom:2px solid #FFE600}
+.list{padding:8px 12px 80px;display:flex;flex-direction:column;gap:6px}
+.item{background:#fff;border-radius:8px;padding:11px 13px;display:flex;align-items:center;gap:10px;box-shadow:0 1px 3px rgba(0,0,0,.06);border-left:4px solid #e0e0e0}
+.item.f1{border-left-color:#00a651;background:#f0fdf4}
+.item.f3{border-left-color:#9333ea;background:#faf5ff}
+.item.f2{border-left-color:#f59e0b;background:#fffbeb}
+.item.pub{border-left-color:#0ea5e9;background:#f0f9ff}
+.item-icon{font-size:18px;flex-shrink:0}
+.item-body{flex:1;min-width:0}
+.item-sku{font-size:13px;font-weight:800;font-family:monospace}
+.item-desc{font-size:12px;color:#555;margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.item-ts{font-size:10px;color:#aaa;margin-top:2px}
+.item-badge{font-size:11px;font-weight:700;padding:4px 9px;border-radius:20px;flex-shrink:0;white-space:nowrap}
+.badge-f1{background:#d1fae5;color:#065f46}.badge-f3{background:#ede9fe;color:#5b21b6}
+.badge-f2{background:#fef3c7;color:#92400e}.badge-pub{background:#e0f2fe;color:#0369a1}
+.item-link{font-size:11px;color:#0369a1;text-decoration:none;margin-top:3px;display:block}
+.empty{text-align:center;padding:40px 20px;color:#bbb;font-size:14px}
+.placeholder-msg{text-align:center;padding:30px 20px;color:#aaa;font-size:13px;background:#fff;border-radius:10px;margin:8px 0}
+.placeholder-msg strong{display:block;color:#888;margin-bottom:6px;font-size:15px}
+.refresh-btn{position:fixed;bottom:20px;right:20px;background:#1a1a1a;color:#FFE600;border:none;border-radius:50%;width:50px;height:50px;font-size:20px;cursor:pointer;box-shadow:0 3px 10px rgba(0,0,0,.25)}
+.tabs{display:flex;background:#fff;border-bottom:2px solid #FFE600;overflow-x:auto}
+.tab{flex:1;min-width:80px;padding:10px 4px;font-size:11px;font-weight:700;color:#999;border:none;background:none;cursor:pointer;text-transform:uppercase;letter-spacing:.4px;white-space:nowrap}
+.tab.on{color:#1a1a1a;border-bottom:2px solid #1a1a1a;margin-bottom:-2px}
+.section-count{font-size:11px;color:#aaa;padding:6px 14px 2px}
+.btn-enc{font-size:11px;font-weight:700;padding:6px 10px;border-radius:8px;border:none;cursor:pointer;background:#e5e7eb;color:#374151;flex-shrink:0}
 </style>
 </head>
 <body>
-
 <header>
-  <div class="header-left">
-    <div class="dot" id="dot"></div>
-    <span class="header-title">Panel Depósito</span>
-    <span class="logo-badge">VOLHOTIC</span>
-  </div>
-  <span class="header-time" id="header-ts">—</span>
+  <div><span class="dot" id="dot"></span>Panel Deposito Volhotic</div>
+  <span id="header-ts">-</span>
 </header>
-
-<div class="textar-strip">
-  <div class="textar-brand">
-    <span class="textar-wordmark">TEXTAR®</span>
-    <span class="textar-sub">BRAKE TECHNOLOGY</span>
-  </div>
-  <div class="textar-chips">
-    <div class="chip">
-      <svg width="14" height="14" viewBox="0 0 36 36"><circle cx="18" cy="18" r="15" fill="none" stroke="#1a1a1a" stroke-width="3"/><circle cx="18" cy="18" r="8" fill="none" stroke="#1a1a1a" stroke-width="2.5"/><circle cx="18" cy="18" r="3" fill="#1a1a1a"/></svg>Discos
-    </div>
-    <div class="chip">
-      <svg width="14" height="14" viewBox="0 0 36 36"><rect x="5" y="7" width="26" height="20" rx="4" fill="none" stroke="#1a1a1a" stroke-width="2.5"/><rect x="9" y="11" width="18" height="12" rx="2" fill="#1a1a1a"/></svg>Past.
-    </div>
-    <div class="chip">
-      <svg width="14" height="14" viewBox="0 0 36 36"><line x1="18" y1="3" x2="18" y2="14" stroke="#1a1a1a" stroke-width="3" stroke-linecap="round"/><circle cx="18" cy="20" r="6" fill="none" stroke="#1a1a1a" stroke-width="2.5"/><circle cx="18" cy="20" r="2.5" fill="#1a1a1a"/><path d="M9 30 Q18 23 27 30" stroke="#1a1a1a" stroke-width="2.5" fill="none" stroke-linecap="round"/></svg>Sens.
-    </div>
-  </div>
-</div>
-
 <div class="stats">
-  <div class="stat"><div class="stat-n n-enc" id="s-enc">—</div><div class="stat-l">Encontrados</div></div>
-  <div class="stat"><div class="stat-n n-pend" id="s-pend">—</div><div class="stat-l">Pendientes</div></div>
-  <div class="stat"><div class="stat-n n-total">131</div><div class="stat-l">Total</div></div>
+  <div class="stat"><div class="n n-enc" id="s-enc">-</div><div class="l">Enc.</div></div>
+  <div class="stat"><div class="n n-noe" id="s-noe">-</div><div class="l">No enc.</div></div>
+  <div class="stat"><div class="n n-pend" id="s-pend">-</div><div class="l">Pend.</div></div>
+  <div class="stat"><div class="n n-total">131</div><div class="l">Total</div></div>
 </div>
-<div class="update-bar"><span id="last-update">Cargando...</span></div>
-
-<div class="search-section">
-  <div class="search-label">Buscar y registrar producto</div>
-  <div class="search-row">
-    <div class="search-wrap">
-      <input id="sku-input" class="search-input" type="text" placeholder="Escribí el código del producto"
-        oninput="onSkuInput()" onkeydown="if(event.key==='Enter'){abrirModal();event.preventDefault()}">
-      <div class="sugerencias" id="sugerencias"></div>
-    </div>
-    <button class="btn-reg" onclick="abrirModal()">Registrar</button>
-  </div>
-</div>
-
+<div class="last-update" id="last-update">Cargando...</div>
 <div class="tabs">
-  <button class="tab-btn on" id="tab-f1" onclick="setTab('f1')">
-    <svg width="20" height="20" viewBox="0 0 36 36"><circle cx="18" cy="18" r="15" fill="none" stroke="#00a651" stroke-width="3"/><circle cx="18" cy="18" r="8" fill="none" stroke="#00a651" stroke-width="2.5"/><circle cx="18" cy="18" r="3" fill="#00a651"/><line x1="18" y1="3" x2="18" y2="7" stroke="#00a651" stroke-width="2" stroke-linecap="round"/><line x1="18" y1="29" x2="18" y2="33" stroke="#00a651" stroke-width="2" stroke-linecap="round"/><line x1="3" y1="18" x2="7" y2="18" stroke="#00a651" stroke-width="2" stroke-linecap="round"/><line x1="29" y1="18" x2="33" y2="18" stroke="#00a651" stroke-width="2" stroke-linecap="round"/></svg>
-    F1 · Discos AG
-  </button>
-  <button class="tab-btn" id="tab-f2" onclick="setTab('f2')">
-    <svg width="20" height="20" viewBox="0 0 36 36"><rect x="5" y="7" width="26" height="20" rx="4" fill="none" stroke="#f59e0b" stroke-width="2.5"/><rect x="9" y="11" width="18" height="12" rx="2" fill="#f59e0b"/><rect x="12" y="27" width="4" height="4" rx="1" fill="#f59e0b"/><rect x="20" y="27" width="4" height="4" rx="1" fill="#f59e0b"/></svg>
-    F2 · Past. AG
-  </button>
-  <button class="tab-btn" id="tab-f3" onclick="setTab('f3')">
-    <svg width="20" height="20" viewBox="0 0 36 36"><line x1="18" y1="3" x2="18" y2="14" stroke="#0ea5e9" stroke-width="2.5" stroke-linecap="round"/><circle cx="18" cy="20" r="6" fill="none" stroke="#0ea5e9" stroke-width="2.5"/><circle cx="18" cy="20" r="2.5" fill="#0ea5e9"/><path d="M9 30 Q18 23 27 30" stroke="#0ea5e9" stroke-width="2.5" fill="none" stroke-linecap="round"/></svg>
-    F3 · Sin match
-  </button>
-  <button class="tab-btn" id="tab-pub" onclick="setTab('pub')">
-    <svg width="20" height="20" viewBox="0 0 36 36"><polygon points="18,3 22,14 34,14 24,21 28,33 18,26 8,33 12,21 2,14 14,14" fill="none" stroke="#0ea5e9" stroke-width="2.5" stroke-linejoin="round"/></svg>
-    Publicados
-  </button>
+  <button class="tab on" onclick="setTab('f1')">F1 AG</button>
+  <button class="tab" onclick="setTab('f3')">F3 Disco</button>
+  <button class="tab" onclick="setTab('f2')">F2 Past.</button>
+  <button class="tab" onclick="setTab('pub')">Pub.</button>
 </div>
 <div class="section-count" id="section-count"></div>
 <div class="list" id="list"></div>
-<button class="fab" onclick="cargar()">↻</button>
-
-<!-- Modal: Registrar -->
-<div class="overlay" id="modal-reg" onclick="cerrarModal(event)">
-  <div class="sheet">
-    <div class="sheet-handle"></div>
-    <div class="sheet-header">
-      <div class="sheet-ico" id="m-ico"></div>
-      <div>
-        <div class="sheet-sku" id="m-sku"></div>
-        <div class="sheet-name" id="m-name"></div>
-        <span class="sheet-fase" id="m-fase"></span>
-      </div>
-    </div>
-    <div class="qty-label">¿Cuántas unidades encontraste?</div>
-    <div class="qty-row">
-      <button class="qty-btn" onclick="cambiarQty(-1)">−</button>
-      <input class="qty-input" id="qty-input" type="number" value="1" min="1" max="999">
-      <button class="qty-btn" onclick="cambiarQty(1)">+</button>
-    </div>
-    <button class="btn-confirm" onclick="confirmarEncontrado()">✅ &nbsp;Confirmar encontrado</button>
-    <button class="btn-cancel" onclick="cerrarModalBtn()">Cancelar</button>
-  </div>
-</div>
-
-<!-- Modal: Restablecer -->
-<div class="overlay" id="modal-rst" onclick="cerrarRst(event)">
-  <div class="rst-sheet">
-    <div class="sheet-handle"></div>
-    <div class="rst-ico-wrap"><div class="rst-ico-circle">↩</div></div>
-    <div class="rst-title">¿Deshacer este registro?</div>
-    <div class="rst-sub">El producto vuelve a <strong>pendiente</strong>.<br>Usá esto solo si lo cargaste por error.</div>
-    <div class="rst-sku-pill" id="rst-sku-pill"></div>
-    <button class="btn-rst-confirm" onclick="confirmarRst()">Sí, deshacer</button>
-    <button class="btn-rst-cancel" onclick="cerrarRstBtn()">No, mantener</button>
-  </div>
-</div>
-
-<div class="toast" id="toast"></div>
-
+<button class="refresh-btn" onclick="cargar()">R</button>
 <script>
-var FB='https://volhotic-textar-default-rtdb.firebaseio.com/volhotic/lista';
-var TOTAL=131;
-var FASE1=new Set(["92228903","92159510","92140800","92140803","92224903","92229805","92120603","92120700","92120703","92120705","92174203","92098600","92106100","92106700","92106703","92105800","92105803","92160300","92238305","92160200","92160205","92082303","92082203","92121000","92121003","92106200","92106300","92137100","92072100","92275903","92143900","92083500","92109803","92088500","92090800","92104100","92117303","92057600","92057603","92132200","92132500","92132503","92132600","92120803","92140703","92120900","92120903","92083600","92083603","92132300","92229203","92159603","92163503","92282605","92282705","92282803","92151005","92119903","92163603","92115503","92105905","92106003","92057500","92106603"]);
-var FASE2_AG=new Set(["2313101","2355403","2391401"]);
-
-/*
- * LÓGICA DE FASES
- * ================
- * FASE 1 : Discos (92xxxxx) CON match Alta Gama  → set FASE1
- * FASE 2 : Pastillas/Sensores CON match Alta Gama → set FASE2_AG
- * FASE 3 : TODO sin match AG (discos + past/sens)
- *
- * ⚠️ REGLA AUTODOC — VERIFICACIÓN OBLIGATORIA POST-SCRAPING:
- *   Tras correr scraping autodoc.es:
- *   1. Re-cruzar TODOS los SKUs contra tienda Alta Gama actualizada
- *   2. Los que ganen match AG migran: Fase3 → Fase1 (discos) o Fase2 (pastillas/sens)
- *   3. Actualizar sets FASE1 y FASE2_AG con los nuevos matches
- *   4. Esta verificación NO se puede omitir
- * ================
- */
-
-var INV={
-  "92082203":"Disco Del. 256mm Bora/Golf/Audi A1","92082303":"Disco Del. 280mm Golf/Bora/Audi A3",
-  "92106603":"Disco Del. 287mm Golf/Bora/Polo","92098600":"Disco Tras. Bora/Golf/Seat Leon",
-  "92228903":"Disco Del. Amarok","92160205":"Disco Del. Audi A4 A5",
-  "92282605":"Disco Del. Audi A4 A5 A6 Q5","92282705":"Disco Del. Audi A4 A5 A6 Q5",
-  "92160200":"Disco Del. Audi A4 A5 Q5","92106700":"Disco Del. Audi A4 A6 M/V",
-  "92106703":"Disco Del. Audi A4 A6 M/V","92057600":"Disco Del. Audi A4 A6/Passat",
-  "92106100":"Disco Del. Audi A4 A6/Passat","92143900":"Disco Del. Audi A4 M/V",
-  "92083500":"Disco Del. Audi A4/Passat","92132200":"Disco Del. Audi A6",
-  "92132300":"Disco Del. Audi A6","92159603":"Disco Del. Clase C",
-  "92163503":"Disco Del. Clase C E/Slk","92151005":"Disco Del. Clase C/Clk",
-  "92119903":"Disco Del. Clase E/Cls","92120700":"Disco Del. Golf/Vento/Audi A3",
-  "92120703":"Disco Del. Golf/Vento/Audi A3","92120705":"Disco Del. Golf/Vento/Audi A3",
-  "92120803":"Disco Del. Golf/Vento/A3 288mm","92106003":"Disco Del. Mercedes Clase C E",
-  "92105905":"Disco Del. Mercedes Clase C","92121000":"Disco Del. Passat 00-05",
-  "92121003":"Disco Del. Passat 00-05","92083600":"Disco Del. Passat 96-01",
-  "92083603":"Disco Del. Passat 96-01","92057603":"Disco Del. Passat/Audi A4 A6",
-  "92120603":"Disco Del. Passat/Vento/Audi A3","92275903":"Disco Del. Polo/Audi A1",
-  "92229805":"Disco Del. Seat Leon/Golf/A3","92109803":"Disco Del. Sharan/Transporter",
-  "92088500":"Disco Tras. Audi A4 A6/Passat","92238305":"Disco Tras. Audi A4 A5 A6 Q5",
-  "92160300":"Disco Tras. Audi A4 A5 Q5","92106300":"Disco Tras. Audi A4 M/V",
-  "92072100":"Disco Tras. Audi A4 M/V","92137100":"Disco Tras. Audi A4 M/V",
-  "92106200":"Disco Tras. Audi A4 M/V","92174203":"Disco Tras. Audi A4/Passat",
-  "92132600":"Disco Tras. Audi A6","92132500":"Disco Tras. Audi A6 04-11",
-  "92132503":"Disco Tras. Audi A6 04-11","92159510":"Disco Tras. Audi A6 06-11",
-  "92104100":"Disco Tras. Audi A6 97-05","92090800":"Disco Tras. Audi A6 97-05",
-  "92117303":"Disco Tras. Audi A6 97-05","92057500":"Disco Tras. Audi A6/Passat",
-  "92105803":"Disco Tras. Bora/Golf","92105800":"Disco Tras. Bora/Golf",
-  "92121103":"Disco Tras. Golf/Vento/Audi A3","92120900":"Disco Tras. Golf/Vento/Audi A3",
-  "92120903":"Disco Tras. Golf/Vento/Audi A3","92163603":"Disco Tras. Mercedes Clase C E",
-  "92115503":"Disco Tras. Mercedes Clase E","92140803":"Disco Tras. Passat/Tiguan/A3",
-  "92140800":"Disco Tras. Passat/Tiguan/A3","92083900":"Disco Tras. Transporter",
-  "92224903":"Disco Tras. Vento/Passat/A1 A3","92229203":"Disco Del. A4 A5 A6 Q5",
-  "92282803":"Disco Del/Tras Audi A4 A5 A6","92140703":"Disco Del/Tras Vento/Passat A3",
-  "4226001":"Pastillas De Freno","2313101":"Pastillas Del. Bora/Fox/Suran",
-  "2372301":"Pastillas Del. Ford Focus II","2412301":"Pastillas Del. Ford Mondeo",
-  "2327904":"Pastillas Del. Ford Mondeo III","2413701":"Pastillas Tras. Ford Focus II",
-  "2453703":"Pastillas Tras. Ford Galaxy","2355701":"Pastillas Tras. Ford Mondeo III",
-  "2355403":"Pastillas Tras. Sharan","2391401":"Pastillas Tras. Vento",
-  "98043500":"Sensor BMW Del.","98042400":"Sensor BMW Del.","98047500":"Sensor BMW Del.",
-  "98030200":"Sensor Mini Del.","98052700":"Sensor Mini Del.","98044800":"Sensor Mini Del.",
-  "98048700":"Sensor Mercedes Del/Tras","98030700":"Sensor BMW Tras.","98047600":"Sensor BMW Tras.",
-  "98052100":"Sensor BMW/Mini Tras.","98044900":"Sensor Mini Tras.","98036300":"Sensor Mini Tras."
-};
-
-// SVG icons
-var SVG_DISCO='<svg width="28" height="28" viewBox="0 0 36 36"><circle cx="18" cy="18" r="15" fill="none" stroke="#00a651" stroke-width="3"/><circle cx="18" cy="18" r="8" fill="none" stroke="#00a651" stroke-width="2.5"/><circle cx="18" cy="18" r="3.5" fill="#00a651"/><line x1="18" y1="3" x2="18" y2="8" stroke="#00a651" stroke-width="2.5" stroke-linecap="round"/><line x1="18" y1="28" x2="18" y2="33" stroke="#00a651" stroke-width="2.5" stroke-linecap="round"/><line x1="3" y1="18" x2="8" y2="18" stroke="#00a651" stroke-width="2.5" stroke-linecap="round"/><line x1="28" y1="18" x2="33" y2="18" stroke="#00a651" stroke-width="2.5" stroke-linecap="round"/></svg>';
-var SVG_PASTILLA='<svg width="28" height="28" viewBox="0 0 36 36"><rect x="5" y="7" width="26" height="20" rx="4" fill="none" stroke="#f59e0b" stroke-width="2.5"/><rect x="9" y="11" width="18" height="12" rx="2" fill="#f59e0b"/><rect x="12" y="27" width="4" height="5" rx="1.5" fill="#f59e0b"/><rect x="20" y="27" width="4" height="5" rx="1.5" fill="#f59e0b"/></svg>';
-var SVG_SENSOR='<svg width="28" height="28" viewBox="0 0 36 36"><line x1="18" y1="3" x2="18" y2="13" stroke="#0ea5e9" stroke-width="3" stroke-linecap="round"/><circle cx="18" cy="19" r="6" fill="none" stroke="#0ea5e9" stroke-width="2.5"/><circle cx="18" cy="19" r="2.5" fill="#0ea5e9"/><path d="M9 29 Q18 22 27 29" stroke="#0ea5e9" stroke-width="2.5" fill="none" stroke-linecap="round"/><path d="M5 33 Q18 24 31 33" stroke="#0ea5e9" stroke-width="1.5" fill="none" stroke-linecap="round" opacity=".4"/></svg>';
-var SVG_DISCO_LG='<svg width="36" height="36" viewBox="0 0 36 36"><circle cx="18" cy="18" r="15" fill="none" stroke="#00a651" stroke-width="3"/><circle cx="18" cy="18" r="8" fill="none" stroke="#00a651" stroke-width="2.5"/><circle cx="18" cy="18" r="3.5" fill="#00a651"/><line x1="18" y1="3" x2="18" y2="8" stroke="#00a651" stroke-width="2.5" stroke-linecap="round"/><line x1="18" y1="28" x2="18" y2="33" stroke="#00a651" stroke-width="2.5" stroke-linecap="round"/><line x1="3" y1="18" x2="8" y2="18" stroke="#00a651" stroke-width="2.5" stroke-linecap="round"/><line x1="28" y1="18" x2="33" y2="18" stroke="#00a651" stroke-width="2.5" stroke-linecap="round"/></svg>';
-var SVG_PASTILLA_LG='<svg width="36" height="36" viewBox="0 0 36 36"><rect x="5" y="7" width="26" height="20" rx="4" fill="none" stroke="#f59e0b" stroke-width="2.5"/><rect x="9" y="11" width="18" height="12" rx="2" fill="#f59e0b"/><rect x="12" y="27" width="4" height="5" rx="1.5" fill="#f59e0b"/><rect x="20" y="27" width="4" height="5" rx="1.5" fill="#f59e0b"/></svg>';
-var SVG_SENSOR_LG='<svg width="36" height="36" viewBox="0 0 36 36"><line x1="18" y1="3" x2="18" y2="13" stroke="#0ea5e9" stroke-width="3" stroke-linecap="round"/><circle cx="18" cy="19" r="6" fill="none" stroke="#0ea5e9" stroke-width="2.5"/><circle cx="18" cy="19" r="2.5" fill="#0ea5e9"/><path d="M9 29 Q18 22 27 29" stroke="#0ea5e9" stroke-width="2.5" fill="none" stroke-linecap="round"/><path d="M5 33 Q18 24 31 33" stroke="#0ea5e9" stroke-width="1.5" fill="none" stroke-linecap="round" opacity=".4"/></svg>';
-
-function tipoSKU(s){if(s.startsWith('92'))return'disco';if(s.startsWith('2')||s==='4226001')return'pastilla';if(s.startsWith('98'))return'sensor';return'disco';}
-function svgSKU(s,lg){var t=tipoSKU(s);return t==='disco'?(lg?SVG_DISCO_LG:SVG_DISCO):t==='pastilla'?(lg?SVG_PASTILLA_LG:SVG_PASTILLA):(lg?SVG_SENSOR_LG:SVG_SENSOR);}
-function tieneMatchAG(s){return FASE1.has(s)||FASE2_AG.has(s);}
-function esDisco(s){return s.startsWith('92');}
-function esPastSens(s){return s.startsWith('2')||s.startsWith('98')||s==='4226001';}
-function faseInfo(s){
-  if(FASE1.has(s))return{cls:'f1',txt:'Fase 1 · AG disponible'};
-  if(FASE2_AG.has(s))return{cls:'f2',txt:'Fase 2 · AG disponible'};
-  if(esPastSens(s))return{cls:'f3',txt:'Fase 3 · Sin match AG'};
-  return{cls:'f3',txt:'Fase 3 · Sin match AG'};
-}
-function fmt(ts){if(!ts)return'';return new Date(ts).toLocaleString('es-AR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'});}
-
-// Autocomplete
-function onSkuInput(){
-  var v=document.getElementById('sku-input').value.toUpperCase();
-  document.getElementById('sku-input').value=v;
-  var box=document.getElementById('sugerencias');
-  if(v.length<2){box.style.display='none';return;}
-  var hits=Object.entries(INV).filter(function(e){return e[0].includes(v)||e[1].toUpperCase().includes(v);}).slice(0,6);
-  if(!hits.length){box.style.display='none';return;}
-  box.innerHTML=hits.map(function(e){
-    var t=tipoSKU(e[0]);var fi=faseInfo(e[0]);var ya=datos&&datos[e[0]]&&datos[e[0]].estado==='enc';
-    return '<div class="sug-item" onclick="seleccionarSKU(\''+e[0]+'\')">'
-      +'<div class="sug-ico '+t+'">'+svgSKU(e[0],false)+'</div>'
-      +'<div class="sug-info"><div class="sug-sku">'+e[0]+(ya?' ✅':'')+'</div><div class="sug-desc">'+e[1]+'</div></div>'
-      +'<span class="sug-badge" style="background:'+(tieneMatchAG(e[0])?'#d1fae5':'#f5f5f5')+';color:'+(tieneMatchAG(e[0])?'#065f46':'#888')+'">'+fi.txt.split('·')[0].trim()+'</span>'
-      +'</div>';
-  }).join('');
-  box.style.display='block';
-}
-function seleccionarSKU(sku){
-  document.getElementById('sku-input').value=sku;
-  document.getElementById('sugerencias').style.display='none';
-  abrirModal();
-}
-
-// Modal registrar
-var skuActual=null;
-function abrirModal(){
-  var raw=document.getElementById('sku-input').value.trim().toUpperCase();
-  if(!raw){showToast('Escribí el código del producto');return;}
-  document.getElementById('sugerencias').style.display='none';
-  skuActual=raw;
-  var fi=faseInfo(raw);var t=tipoSKU(raw);
-  document.getElementById('m-sku').textContent='SKU '+raw;
-  document.getElementById('m-name').textContent=INV[raw]||'Producto '+raw;
-  document.getElementById('m-ico').className='sheet-ico '+t;
-  document.getElementById('m-ico').innerHTML=svgSKU(raw,true);
-  var fe=document.getElementById('m-fase');fe.textContent=fi.txt;fe.className='sheet-fase '+fi.cls;
-  document.getElementById('qty-input').value=1;
-  document.getElementById('modal-reg').classList.add('open');
-  setTimeout(function(){var inp=document.getElementById('qty-input');inp.select();inp.scrollIntoView({behavior:'smooth',block:'center'});},350);
-}
-function cerrarModal(e){if(e.target===document.getElementById('modal-reg'))cerrarModalBtn();}
-function cerrarModalBtn(){document.getElementById('modal-reg').classList.remove('open');document.getElementById('sku-input').value='';skuActual=null;}
-function cambiarQty(d){var i=document.getElementById('qty-input');i.value=Math.max(1,(parseInt(i.value)||1)+d);}
-function confirmarEncontrado(){
-  if(!skuActual)return;
-  var qty=parseInt(document.getElementById('qty-input').value)||1;
-  guardarFB(skuActual,{estado:'enc',ts:Date.now(),cantidad:qty});
-  cerrarModalBtn();
-  showToast('✅ '+skuActual+' · '+qty+' ud'+(qty!==1?'s':''));
-  setTimeout(cargar,500);
-}
-
-// Modal restablecer
-var skuRst=null;
-function abrirRst(sku){
-  skuRst=sku;
-  document.getElementById('rst-sku-pill').textContent=sku+(INV[sku]?' · '+INV[sku]:'');
-  document.getElementById('modal-rst').classList.add('open');
-}
-function cerrarRst(e){if(e.target===document.getElementById('modal-rst'))cerrarRstBtn();}
-function cerrarRstBtn(){document.getElementById('modal-rst').classList.remove('open');skuRst=null;}
-function confirmarRst(){
-  if(!skuRst)return;
-  fetch(FB+'/'+skuRst+'.json',{method:'DELETE'})
-    .then(function(){showToast('↩ '+skuRst+' vuelve a pendiente');cerrarRstBtn();setTimeout(cargar,400);})
-    .catch(function(){showToast('Error al restablecer');});
-}
-
-function guardarFB(sku,payload){
-  fetch(FB+'/'+sku+'.json',{method:'PATCH',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)}).catch(function(){showToast('Error Firebase');});
-}
-function showToast(msg){var t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(function(){t.classList.remove('show');},2500);}
+const FB='https://volhotic-textar-default-rtdb.firebaseio.com/volhotic/lista.json';
+const TOTAL=131;
+const FASE1=new Set(["92228903","92159510","92140800","92140803","92224903","92229805","92120603","92120700","92120703","92120705","92174203","92098600","92106100","92106700","92106703","92105800","92105803","92160300","92238305","92160200","92160205","92082303","92082203","92121000","92121003","92106200","92106300","92137100","92072100","92275903","92143900","92083500","92109803","92088500","92090800","92104100","92117303","92057600","92057603","92132200","92132500","92132503","92132600","92120803","92140703","92120900","92120903","92083600","92083603","92132300","92229203","92159603","92163503","92282605","92282705","92282803","92151005","92119903","92163603","92115503","92105905","92106003","92057500","92106603","92032003","92121103","92121505","92121605","92255403"]);
+const FASE2_AG=new Set(["2313101","2355403","2391401"]);
+function esFase2(s){return s.startsWith('2')||s.startsWith('98')||s==='4226001';}
+function esFase3(s){return s.startsWith('92')&&!FASE1.has(s);}
+const INV={"92082203":"Disco Del. 256mm Bora/Golf/Audi A1","92082303":"Disco Del. 280mm Golf/Bora/Audi A3","92106603":"Disco Del. 287mm Golf/Bora/Polo/Audi","92098500":"Disco Del. 312mm Bora/Polo/Audi A3","92098503":"Disco Del. 312mm Bora/Polo/Audi A3","92229203":"Disco Del. A4 A5 A6 Q5","92228903":"Disco Del. Amarok","92160205":"Disco Del. Audi A4 A5","92282605":"Disco Del. Audi A4 A5 A6 Q5","92282705":"Disco Del. Audi A4 A5 A6 Q5","92160200":"Disco Del. Audi A4 A5 Q5","92106700":"Disco Del. Audi A4 A6 M/V","92106703":"Disco Del. Audi A4 A6 M/V","92057600":"Disco Del. Audi A4 A6/Passat M/V","92106100":"Disco Del. Audi A4 A6/Passat M/V","92143900":"Disco Del. Audi A4 M/V","92083500":"Disco Del. Audi A4/Passat M/V","92132200":"Disco Del. Audi A6","92132300":"Disco Del. Audi A6","92161510":"Disco Del. Audi TT/Golf Der","92161410":"Disco Del. Audi TT/Golf Izq","92055603":"Disco Del. BMW E36/46","92217810":"Disco Del. BMW E60","92159603":"Disco Del. Clase C","92163503":"Disco Del. Clase C E/Slc/Slk","92151005":"Disco Del. Clase C/Clk","92119903":"Disco Del. Clase E/Cls","92238403":"Disco Del. E 81 87","92097203":"Disco Del. E46","92103103":"Disco Del. Ford (Australia)","92120700":"Disco Del. Golf/Vento/Audi A3/Seat Leon","92120703":"Disco Del. Golf/Vento/Audi A3/Seat Leon","92120705":"Disco Del. Golf/Vento/Audi A3/Seat Leon","92120803":"Disco Del. Golf/Vento/Audi A3 288mm","92027403":"Disco Del. Mercedes 190","92257503":"Disco Del. Mercedes Clase A B/Cla","92241603":"Disco Del. Mercedes Clase A B/Cla","92059403":"Disco Del. Mercedes Clase C","92106003":"Disco Del. Mercedes Clase C E/Clk","92105905":"Disco Del. Mercedes Clase C/Clk","92121000":"Disco Del. Passat 00-05","92121003":"Disco Del. Passat 00-05","92083600":"Disco Del. Passat 96-01","92083603":"Disco Del. Passat 96-01","92057603":"Disco Del. Passat/Audi A4 A6 M/V","92120603":"Disco Del. Passat/Vento/Audi A3","92275903":"Disco Del. Polo/Audi A1","92207110":"Disco Del. R8 RS5 365mm","92229805":"Disco Del. Seat Leon/Golf/Vento/Audi A3","92109803":"Disco Del. Sharan/Transporter","92121605":"Disco Del. Touareg Der","92121505":"Disco Del. Touareg Izq","92219605":"Disco Del. Touareg","92219505":"Disco Del. Touareg","92083800":"Disco Del. Transporter","92083700":"Disco Del. Transporter","92083703":"Disco Del. Transporter","92255403":"Disco Del/Tras 300mm Golf/Passat/Tiguan","92282803":"Disco Del/Tras Audi A4 A5 A6 Q5","92059503":"Disco Del/Tras Mercedes 124","92140703":"Disco Del/Tras Vento/Passat/Audi A3 Q3","92141200":"Disco Ford Focus II","92159300":"Disco Ford Galaxy/Mondeo","92159200":"Disco Ford Galaxy/S-Max","92109700":"Disco Ford Mondeo","92109703":"Disco Ford Mondeo","92109600":"Disco Ford Mondeo III","92088500":"Disco Tras. Audi A4 A6/Passat M/V","92238305":"Disco Tras. Audi A4 A5 A6 A7 Q5 Q7","92160300":"Disco Tras. Audi A4 A5 Q5","92106300":"Disco Tras. Audi A4 M/V","92072100":"Disco Tras. Audi A4 M/V","92137100":"Disco Tras. Audi A4 M/V","92106200":"Disco Tras. Audi A4 M/V","92174203":"Disco Tras. Audi A4/Passat M/V","92132600":"Disco Tras. Audi A6","92132500":"Disco Tras. Audi A6 04-11","92132503":"Disco Tras. Audi A6 04-11","92159510":"Disco Tras. Audi A6 06-11","92104100":"Disco Tras. Audi A6 97-05","92090800":"Disco Tras. Audi A6 97-05","92117303":"Disco Tras. Audi A6 97-05","92057500":"Disco Tras. Audi A6/Passat M/V","92122005":"Disco Tras. Audi Q7/Touareg","92261003":"Disco Tras. BMW","92133103":"Disco Tras. BMW E 81 87 90","92105803":"Disco Tras. Bora/Golf","92105800":"Disco Tras. Bora/Golf","92098600":"Disco Tras. Bora/Golf/Seat Leon Toledo","92072403":"Disco Tras. E46","92274103":"Disco Tras. Ford Transit","92121103":"Disco Tras. Golf/Vento/Audi A3","92120900":"Disco Tras. Golf/Vento/Audi A3/Seat Leon","92120903":"Disco Tras. Golf/Vento/Audi A3/Seat Leon","92032703":"Disco Tras. Mercedes 124/Clase C E","92132103":"Disco Tras. Mercedes Clase A B","92163603":"Disco Tras. Mercedes Clase C E","92115503":"Disco Tras. Mercedes Clase E","92056900":"Disco Tras. Mercedes Clase S","92032600":"Disco Tras. Mercedes Clase S/123","92032003":"Disco Tras. Mercedes Coupe 124/Clase E","92238703":"Disco Tras. Mini Couper","92175003":"Disco Tras. Mini Couper","92140803":"Disco Tras. Passat/Tiguan/Vento/Audi A3","92140800":"Disco Tras. Passat/Tiguan/Vento/Audi A3","92098200":"Disco Tras. Seat Cordoba/Polo","92074303":"Disco Tras. Sharan","92083900":"Disco Tras. Transporter","92224903":"Disco Tras. Vento/Passat/Audi A1 A3","4226001":"Pastillas De Freno","2313101":"Pastillas Del. Bora/Fox/Suran","2372301":"Pastillas Del. Ford Focus II III","2412301":"Pastillas Del. Ford Mondeo","2327904":"Pastillas Del. Ford Mondeo III","2413701":"Pastillas Tras. Ford Focus II","2453703":"Pastillas Tras. Ford Galaxy/Focus","2355701":"Pastillas Tras. Ford Mondeo III","2355403":"Pastillas Tras. Sharan","2391401":"Pastillas Tras. Vento","98043500":"Sensor BMW Del.","98042400":"Sensor BMW Del.","98047500":"Sensor BMW Del.","98030200":"Sensor Mini Del.","98052700":"Sensor Mini Del.","98044800":"Sensor Mini Del.","98048700":"Sensor Mercedes Del/Tras","98030700":"Sensor BMW Tras.","98047600":"Sensor BMW Tras.","98052100":"Sensor BMW/Mini Tras.","98044900":"Sensor Mini Tras.","98036300":"Sensor Mini Tras."};
+let datos={},tab='f1';
 function setDot(s){document.getElementById('dot').className='dot '+s;}
-
-// Tabs
-var tab='f1';
-function setTab(t){
-  tab=t;
-  ['f1','f2','f3','pub'].forEach(function(id){document.getElementById('tab-'+id).classList.remove('on');});
-  document.getElementById('tab-'+t).classList.add('on');
-  render();
+function fmt(ts){if(!ts)return'';return new Date(ts).toLocaleString('es-AR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'});}
+function setTab(t){tab=t;document.querySelectorAll('.tab').forEach(el=>el.classList.remove('on'));document.querySelectorAll('.tab')[['f1','f3','f2','pub'].indexOf(t)].classList.add('on');render();}
+async function marcarEncontrado(sku,cant){
+  const p={estado:'enc',ts:Date.now(),qty:cant};
+  await fetch('https://volhotic-textar-default-rtdb.firebaseio.com/volhotic/lista/'+sku+'.json',{method:'PUT',body:JSON.stringify(p)});
+  datos[sku]=p;render();
 }
-
-// Render item
-function mkItem(sku,d,barCls,icoCls,badgeCls,badgeTxt,extraTags){
-  var ag=tieneMatchAG(sku)?'<span class="tag tag-ag">AG ✓</span>':'';
-  var qty=d.cantidad?'<span class="tag tag-qty">📦 '+d.cantidad+' ud'+(d.cantidad!==1?'s':'')+'</span>':'';
-  var ts=d.ts?'<span class="tag tag-ts">'+fmt(d.ts)+'</span>':'';
-  return '<div class="item">'
-    +'<div class="item-bar '+barCls+'"></div>'
-    +'<div class="item-body">'
-    +'<div class="item-ico '+icoCls+'">'+svgSKU(sku,false)+'</div>'
-    +'<div class="item-info">'
-    +'<div class="item-sku">SKU '+sku+'</div>'
-    +'<div class="item-name">'+(INV[sku]||sku)+'</div>'
-    +'<div class="item-meta">'+qty+ag+ts+(extraTags||'')+'</div>'
-    +(d.ml_link?'<a style="font-size:11px;color:#0369a1;text-decoration:none;margin-top:4px;display:inline-block" href="'+d.ml_link+'" target="_blank">🔗 Ver en Mercado Libre</a>':'')
-    +'</div></div>'
-    +'<div class="item-right">'
-    +'<span class="item-badge '+badgeCls+'">'+badgeTxt+'</span>'
-    +'<button class="btn-rst" onclick="event.stopPropagation();abrirRst(\''+sku+'\')">↩ Deshacer</button>'
-    +'</div>'
-    +'</div>';
+function promptEnc(sku){
+  const c=prompt('SKU '+sku+'\n'+(INV[sku]||'')+'\n\nCuantas unidades?','1');
+  if(c===null)return;
+  marcarEncontrado(sku,parseInt(c)||1);
 }
-
-var datos={};
+function renderItem(sku,cls,icon,isEnc,badge,badgeCls,extra){
+  const d=datos[sku]||{};
+  return '<div class="item '+cls+'"><div class="item-icon">'+icon+'</div><div class="item-body"><div class="item-sku">SKU '+sku+'</div><div class="item-desc">'+(INV[sku]||sku)+'</div>'+(isEnc&&d.ts?'<div class="item-ts">Enc. '+fmt(d.ts)+(d.qty?' - '+d.qty+' u':'')+'</div>':'')+(extra||'')+'</div>'+(isEnc?'<span class="item-badge '+badgeCls+'">'+badge+'</span>':'<button class="btn-enc" onclick="promptEnc(\''+sku+'\')">Enc.</button>')+'</div>';
+}
 function render(){
-  var all=Object.entries(datos);
-  var enc=all.filter(function(e){return e[1].estado==='enc';});
-  var pub=all.filter(function(e){return e[1].publicado===true;});
+  const enc=Object.entries(datos).filter(([,v])=>v.estado==='enc');
+  const noe=Object.entries(datos).filter(([,v])=>v.estado==='noe');
+  const pub=Object.entries(datos).filter(([,v])=>v.publicado===true);
   document.getElementById('s-enc').textContent=enc.length;
-  document.getElementById('s-pend').textContent=Math.max(0,TOTAL-enc.length);
-  var list=document.getElementById('list');
-  var count=document.getElementById('section-count');
-
+  document.getElementById('s-noe').textContent=noe.length;
+  document.getElementById('s-pend').textContent=Math.max(0,TOTAL-enc.length-noe.length);
+  const list=document.getElementById('list'),count=document.getElementById('section-count');
   if(tab==='f1'){
-    var items=enc.filter(function(e){return FASE1.has(e[0]);});
-    count.textContent=items.length+' disco'+(items.length!==1?'s':'')+' encontrado'+(items.length!==1?'s':'')+' · con publicación disponible';
-    if(!items.length){list.innerHTML='<div class="empty"><div class="empty-ico">'+SVG_DISCO_LG+'</div><div class="empty-txt">Todavía no hay discos<br>registrados en esta sección</div></div>';return;}
-    list.innerHTML=items.sort(function(a,b){return(b[1].ts||0)-(a[1].ts||0);}).map(function(e){
-      return mkItem(e[0],e[1],'bar-f1','disco','badge-f1',e[1].publicado?'✅ Publicado':'Listo','');
-    }).join('');
-
-  } else if(tab==='f2'){
-    var items=enc.filter(function(e){return FASE2_AG.has(e[0]);});
-    count.textContent=items.length+' pastilla'+(items.length!==1?'s':'')+'/sensor encontrado'+(items.length!==1?'s':'')+' · con publicación disponible';
-    if(!items.length){list.innerHTML='<div class="empty"><div class="empty-ico">'+SVG_PASTILLA_LG+'</div><div class="empty-txt">Todavía no hay pastillas<br>ni sensores registrados acá</div></div>';return;}
-    list.innerHTML=items.sort(function(a,b){return(b[1].ts||0)-(a[1].ts||0);}).map(function(e){
-      return mkItem(e[0],e[1],'bar-f2','pastilla','badge-f2',e[1].publicado?'✅ Publicado':'Listo','');
-    }).join('');
-
+    const all=Object.keys(INV).filter(s=>FASE1.has(s));
+    const found=all.filter(s=>datos[s]&&datos[s].estado==='enc');
+    const pend=all.filter(s=>!datos[s]||datos[s].estado!=='enc');
+    count.textContent=found.length+'/'+all.length+' Fase 1 encontrados - listos para Vender uno igual';
+    list.innerHTML=found.sort((a,b)=>(datos[b]?.ts||0)-(datos[a]?.ts||0)).map(s=>renderItem(s,'f1','V',true,datos[s]?.publicado?'Pub.':'Listo','badge-f1','')).join('')+pend.map(s=>renderItem(s,'','O',false,'','','')).join('');
   } else if(tab==='f3'){
-    var items=enc.filter(function(e){return !tieneMatchAG(e[0]);});
-    var discosSin=items.filter(function(e){return esDisco(e[0]);});
-    var pastSin=items.filter(function(e){return esPastSens(e[0]);});
-    count.textContent=items.length+' producto'+(items.length!==1?'s':'')+' encontrado'+(items.length!==1?'s':'')+' · pendiente de cruce (se resuelve con autodoc)';
-    var html='';
-    if(discosSin.length){
-      html+='<div class="phase-label">💿 Discos · sin publicación disponible aún</div>';
-      html+=discosSin.sort(function(a,b){return(b[1].ts||0)-(a[1].ts||0);}).map(function(e){
-        return mkItem(e[0],e[1],'bar-f3','disco','badge-f3','Sin match','');
-      }).join('');
-    }
-    if(pastSin.length){
-      html+='<div class="phase-label">🔲 Pastillas y sensores · sin publicación disponible aún</div>';
-      html+=pastSin.sort(function(a,b){return(b[1].ts||0)-(a[1].ts||0);}).map(function(e){
-        return mkItem(e[0],e[1],'bar-f3','pastilla','badge-f3','Sin match','');
-      }).join('');
-    }
-    if(!items.length)html='<div class="empty"><div class="empty-ico">🎉</div><div class="empty-txt">No hay productos<br>en esta sección</div></div>';
-    list.innerHTML=html;
-
-  } else if(tab==='pub'){
-    count.textContent=pub.length+' publicacion'+(pub.length!==1?'es':'')+' activa'+(pub.length!==1?'s':'')+' en Mercado Libre';
-    if(!pub.length){list.innerHTML='<div class="empty"><div class="empty-ico"><svg width="48" height="48" viewBox="0 0 36 36"><polygon points="18,3 22,14 34,14 24,21 28,33 18,26 8,33 12,21 2,14 14,14" fill="none" stroke="#ccc" stroke-width="2" stroke-linejoin="round"/></svg></div><div class="empty-txt">Cuando se publique un producto<br>aparece acá</div></div>';return;}
-    list.innerHTML=pub.sort(function(a,b){return(b[1].publicado_ts||0)-(a[1].publicado_ts||0);}).map(function(e){
-      return mkItem(e[0],e[1],'bar-pub','pub','badge-pub','En ML','');
-    }).join('');
+    const all=Object.keys(INV).filter(s=>esFase3(s));
+    const found=all.filter(s=>datos[s]&&datos[s].estado==='enc');
+    const pend=all.filter(s=>!datos[s]||datos[s].estado!=='enc');
+    count.textContent=found.length+'/'+all.length+' Fase 3 - sin equivalente AG';
+    list.innerHTML=found.sort((a,b)=>(datos[b]?.ts||0)-(datos[a]?.ts||0)).map(s=>renderItem(s,'f3','B',true,'Manual','badge-f3','')).join('')+pend.map(s=>renderItem(s,'','O',false,'','','')).join('');
+  } else if(tab==='f2'){
+    const all=Object.keys(INV).filter(s=>esFase2(s));
+    const found=all.filter(s=>datos[s]&&datos[s].estado==='enc');
+    const pend=all.filter(s=>!datos[s]||datos[s].estado!=='enc');
+    count.textContent=found.length+'/'+all.length+' Fase 2 encontrados';
+    list.innerHTML=found.sort((a,b)=>(datos[b]?.ts||0)-(datos[a]?.ts||0)).map(s=>{const ag=FASE2_AG.has(s);return renderItem(s,ag?'f1':'f2',ag?'V':'Y',true,ag?'AG listo':'Fase 2',ag?'badge-f1':'badge-f2',ag?'<div class="item-ts" style="color:#065f46;font-weight:700">AG disponible - Vender uno igual</div>':'');}).join('')+pend.map(s=>renderItem(s,'','O',false,'','','')).join('');
+  } else {
+    count.textContent=pub.length+' publicaciones en ML';
+    if(!pub.length){list.innerHTML='<div class="placeholder-msg"><strong>Publicados en ML</strong>Aparecen aqui cuando se publique.</div>';return;}
+    list.innerHTML=pub.sort((a,b)=>(b[1].publicado_ts||0)-(a[1].publicado_ts||0)).map(([sku,d])=>'<div class="item pub"><div class="item-icon">*</div><div class="item-body"><div class="item-sku">SKU '+sku+'</div><div class="item-desc">'+(INV[sku]||sku)+'</div>'+(d.publicado_ts?'<div class="item-ts">Pub. '+fmt(d.publicado_ts)+'</div>':'')+(d.precio_pub?'<div class="item-ts" style="color:#0369a1;font-weight:700">$ '+d.precio_pub.toLocaleString('es-AR')+'</div>':'')+(d.ml_link?'<a class="item-link" href="'+d.ml_link+'" target="_blank">Ver en ML</a>':'')+'</div><span class="item-badge badge-pub">Publicado</span></div>').join('');
   }
 }
-
-function cargar(){
+async function cargar(){
   setDot('syn');
-  fetch(FB+'.json').then(function(r){if(!r.ok)throw new Error();return r.json();})
-  .then(function(d){
-    datos=d||{};setDot('ok');
-    var now=new Date().toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
-    document.getElementById('last-update').textContent='Actualizado '+now+' · refresca cada 30s';
-    document.getElementById('header-ts').textContent=now;
-    render();
-  }).catch(function(){setDot('err');document.getElementById('last-update').textContent='Sin conexión · reintentando...';});
+  document.getElementById('last-update').textContent='Actualizando...';
+  try{
+    const r=await fetch(FB);
+    const raw=await r.json();
+    datos=raw||{};
+    const ts=new Date().toLocaleString('es-AR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'});
+    document.getElementById('header-ts').textContent=ts;
+    document.getElementById('last-update').textContent='Actualizado: '+ts;
+    setDot('ok');render();
+  }catch(e){setDot('err');document.getElementById('last-update').textContent='Error al cargar';}
 }
-cargar();setInterval(cargar,30000);
-
-// Teclado virtual: la overlay se encoge al alto visible → sheet sube sola
-(function(){
-  if(!window.visualViewport)return;
-  function ajustar(){
-    var h=window.visualViewport.height;
-    document.querySelectorAll('.overlay').forEach(function(el){
-      el.style.height=h+'px';
-      el.style.top=(window.innerHeight-h)+'px';
-    });
-  }
-  window.visualViewport.addEventListener('resize',ajustar);
-  window.visualViewport.addEventListener('scroll',ajustar);
-  ajustar();
-})();
-
+cargar();
+setInterval(cargar,60000);
 </script>
 </body>
 </html>
