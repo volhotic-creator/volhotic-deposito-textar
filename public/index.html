@@ -66,6 +66,12 @@ header{background:var(--b);color:var(--y);padding:0 16px;height:52px;display:fle
 .btn-enc:active{background:#333}
 .btn-reset{font-size:12px;font-weight:700;padding:8px 12px;border-radius:8px;border:2px solid #e0e0e0;cursor:pointer;background:#fff;color:#888;white-space:nowrap;-webkit-tap-highlight-color:transparent;min-width:48px}
 .btn-reset:active{background:#f5f5f5;border-color:#ccc}
+.btn-pub{font-size:12px;font-weight:800;padding:8px 12px;border-radius:8px;border:none;cursor:pointer;background:#0ea5e9;color:#fff;white-space:nowrap;-webkit-tap-highlight-color:transparent;min-width:48px}
+.btn-pub:active{background:#0284c7}
+.pub-locked{font-size:11px;font-weight:700;color:#0369a1;background:#e0f2fe;padding:5px 10px;border-radius:8px;text-align:center}
+.input-field{width:100%;border:1.5px solid #e0e0e0;border-radius:10px;padding:12px 14px;font-size:15px;color:#1a1a1a;outline:none;margin-bottom:10px;-webkit-appearance:none}
+.input-field:focus{border-color:#0ea5e9}
+.input-label{font-size:11px;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px}
 .fab{position:fixed;bottom:22px;right:18px;background:var(--b);color:var(--y);border:none;border-radius:50%;width:56px;height:56px;font-size:24px;cursor:pointer;box-shadow:0 4px 14px rgba(0,0,0,.3);z-index:200;-webkit-tap-highlight-color:transparent}
 .fab:active{transform:scale(.93)}
 .toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%);background:var(--b);color:var(--y);padding:10px 20px;border-radius:20px;font-size:13px;font-weight:700;z-index:300;opacity:0;transition:opacity .3s;pointer-events:none;white-space:nowrap}
@@ -159,6 +165,23 @@ header{background:var(--b);color:var(--y);padding:0 16px;height:52px;display:fle
   </div>
 </div>
 
+<!-- MODAL: Publicar en ML -->
+<div class="modal-bg hidden" id="modal-pub-bg" onclick="closePubModal(event)">
+  <div class="modal">
+    <div class="modal-title">Publicar en MercadoLibre</div>
+    <div class="modal-sku" id="p-sku"></div>
+    <div class="modal-desc" id="p-desc"></div>
+    <div class="input-label">ID de publicación ML</div>
+    <input class="input-field" id="p-mlid" type="text" placeholder="MLA-XXXXXXXXX" autocomplete="off" autocorrect="off">
+    <div class="input-label">Precio publicado (opcional)</div>
+    <input class="input-field" id="p-price" type="number" placeholder="Ej: 45000" inputmode="decimal">
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closePubModal()">Cancelar</button>
+      <button class="btn-confirm" style="background:#0ea5e9" onclick="confirmPub()">&#8679; Publicar</button>
+    </div>
+  </div>
+</div>
+
 <!-- MODAL: Confirmar Reset -->
 <div class="modal-bg hidden" id="modal-reset-bg" onclick="closeResetModal(event)">
   <div class="modal modal-sm">
@@ -180,8 +203,9 @@ const FASE2=new Set(["2355403","2391401"]);
 const INV={"92082203":"Disco Del. 256mm Bora/Golf/Audi A1","92082303":"Disco Del. 280mm Golf/Bora/Audi A3","92106603":"Disco Del. 287mm Golf/Bora/Polo/Audi","92098500":"Disco Del. 312mm Bora/Polo/Audi A3","92098503":"Disco Del. 312mm Bora/Polo/Audi A3","92229203":"Disco Del. A4 A5 A6 Q5","92228903":"Disco Del. Amarok","92160205":"Disco Del. Audi A4 A5","92282605":"Disco Del. Audi A4 A5 A6 Q5","92282705":"Disco Del. Audi A4 A5 A6 Q5","92160200":"Disco Del. Audi A4 A5 Q5","92106700":"Disco Del. Audi A4 A6 M/V","92106703":"Disco Del. Audi A4 A6 M/V","92057600":"Disco Del. Audi A4 A6/Passat M/V","92106100":"Disco Del. Audi A4 A6/Passat M/V","92143900":"Disco Del. Audi A4 M/V","92083500":"Disco Del. Audi A4/Passat M/V","92132200":"Disco Del. Audi A6","92132300":"Disco Del. Audi A6","92161510":"Disco Del. Audi TT/Golf Der","92161410":"Disco Del. Audi TT/Golf Izq","92055603":"Disco Del. BMW E36/46","92217810":"Disco Del. BMW E60","92159603":"Disco Del. Clase C","92163503":"Disco Del. Clase C E/Slc/Slk","92151005":"Disco Del. Clase C/Clk","92119903":"Disco Del. Clase E/Cls","92238403":"Disco Del. E 81 87","92097203":"Disco Del. E46","92103103":"Disco Del. Ford Australia","92120700":"Disco Del. Golf/Vento/Audi A3/Seat Leon","92120703":"Disco Del. Golf/Vento/Audi A3/Seat Leon","92120705":"Disco Del. Golf/Vento/Audi A3/Seat Leon","92120803":"Disco Del. Golf/Vento/Audi A3 288mm","92027403":"Disco Del. Mercedes 190","92257503":"Disco Del. Mercedes Clase A B/Cla","92241603":"Disco Del. Mercedes Clase A B/Cla","92059403":"Disco Del. Mercedes Clase C","92106003":"Disco Del. Mercedes Clase C E/Clk","92105905":"Disco Del. Mercedes Clase C/Clk","92121000":"Disco Del. Passat 00-05","92121003":"Disco Del. Passat 00-05","92083600":"Disco Del. Passat 96-01","92083603":"Disco Del. Passat 96-01","92057603":"Disco Del. Passat/Audi A4 A6 M/V","92120603":"Disco Del. Passat/Vento/Audi A3","92275903":"Disco Del. Polo/Audi A1","92207110":"Disco Del. R8 RS5 365mm","92229805":"Disco Del. Seat Leon/Golf/Vento/Audi A3","92109803":"Disco Del. Sharan/Transporter","92121605":"Disco Del. Touareg Der","92121505":"Disco Del. Touareg Izq","92219605":"Disco Del. Touareg","92219505":"Disco Del. Touareg","92083800":"Disco Del. Transporter","92083700":"Disco Del. Transporter","92083703":"Disco Del. Transporter","92255403":"Disco Del/Tras 300mm Golf/Passat/Tiguan","92282803":"Disco Del/Tras Audi A4 A5 A6 Q5","92059503":"Disco Del/Tras Mercedes 124","92140703":"Disco Del/Tras Vento/Passat/Audi A3 Q3","92141200":"Disco Ford Focus II","92159300":"Disco Ford Galaxy/Mondeo","92159200":"Disco Ford Galaxy/S-Max","92109700":"Disco Ford Mondeo","92109703":"Disco Ford Mondeo","92109600":"Disco Ford Mondeo III","92088500":"Disco Tras. Audi A4 A6/Passat M/V","92238305":"Disco Tras. Audi A4 A5 A6 A7 Q5 Q7","92160300":"Disco Tras. Audi A4 A5 Q5","92106300":"Disco Tras. Audi A4 M/V","92072100":"Disco Tras. Audi A4 M/V","92137100":"Disco Tras. Audi A4 M/V","92106200":"Disco Tras. Audi A4 M/V","92174203":"Disco Tras. Audi A4/Passat M/V","92132600":"Disco Tras. Audi A6","92132500":"Disco Tras. Audi A6 04-11","92132503":"Disco Tras. Audi A6 04-11","92159510":"Disco Tras. Audi A6 06-11","92104100":"Disco Tras. Audi A6 97-05","92090800":"Disco Tras. Audi A6 97-05","92117303":"Disco Tras. Audi A6 97-05","92057500":"Disco Tras. Audi A6/Passat M/V","92122005":"Disco Tras. Audi Q7/Touareg","92261003":"Disco Tras. BMW","92133103":"Disco Tras. BMW E 81 87 90","92105803":"Disco Tras. Bora/Golf","92105800":"Disco Tras. Bora/Golf","92098600":"Disco Tras. Bora/Golf/Seat Leon Toledo","92072403":"Disco Tras. E46","92274103":"Disco Tras. Ford Transit","92121103":"Disco Tras. Golf/Vento/Audi A3","92120900":"Disco Tras. Golf/Vento/Audi A3/Seat Leon","92120903":"Disco Tras. Golf/Vento/Audi A3/Seat Leon","92032703":"Disco Tras. Mercedes 124/Clase C E","92132103":"Disco Tras. Mercedes Clase A B","92163603":"Disco Tras. Mercedes Clase C E","92115503":"Disco Tras. Mercedes Clase E","92056900":"Disco Tras. Mercedes Clase S","92032600":"Disco Tras. Mercedes Clase S/123","92032003":"Disco Tras. Mercedes Coupe 124/Clase E","92238703":"Disco Tras. Mini Couper","92175003":"Disco Tras. Mini Couper","92140803":"Disco Tras. Passat/Tiguan/Vento/Audi A3","92140800":"Disco Tras. Passat/Tiguan/Vento/Audi A3","92098200":"Disco Tras. Seat Cordoba/Polo","92074303":"Disco Tras. Sharan","92083900":"Disco Tras. Transporter","92224903":"Disco Tras. Vento/Passat/Audi A1 A3","4226001":"Pastillas De Freno Genericas","2313101":"Pastillas Del. Bora/Fox/Suran","2372301":"Pastillas Del. Ford Focus II III","2412301":"Pastillas Del. Ford Mondeo","2327904":"Pastillas Del. Ford Mondeo III","2413701":"Pastillas Tras. Ford Focus II","2453703":"Pastillas Tras. Ford Galaxy/Focus","2355701":"Pastillas Tras. Ford Mondeo III","2355403":"Pastillas Tras. Sharan","2391401":"Pastillas Tras. Vento","98043500":"Sensor BMW Del.","98042400":"Sensor BMW Del.","98047500":"Sensor BMW Del.","98030200":"Sensor Mini Del.","98052700":"Sensor Mini Del.","98044800":"Sensor Mini Del.","98048700":"Sensor Mercedes Del/Tras","98030700":"Sensor BMW Tras.","98047600":"Sensor BMW Tras.","98052100":"Sensor BMW/Mini Tras.","98044900":"Sensor Mini Tras.","98036300":"Sensor Mini Tras."};
 
 function getFase(s){return FASE1.has(s)?'f1':FASE2.has(s)?'f2':'f3';}
+const FB_PUB='https://volhotic-textar-default-rtdb.firebaseio.com/volhotic/publicaciones/';
 let datos={},tab='f1',query='',showEnc=false;
-let _mSku='',_mQty=1,_rSku='';
+let _mSku='',_mQty=1,_rSku='',_pSku='';
 
 // Toast
 function showToast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2200);}
@@ -208,6 +232,38 @@ async function confirmEnc(){
   await fetch(FB_SKU+_mSku+'.json',{method:'PUT',body:JSON.stringify(p)});
   datos[_mSku]=p; setDot('ok');
   showToast('OK '+_mSku+' ('+_mQty+' u.)');
+  render();
+}
+
+// MODAL: Publicar en ML
+function openPubModal(sku){
+  _pSku=sku;
+  document.getElementById('p-sku').textContent=sku;
+  document.getElementById('p-desc').textContent=INV[sku]||'';
+  document.getElementById('p-mlid').value='';
+  document.getElementById('p-price').value='';
+  document.getElementById('modal-pub-bg').classList.remove('hidden');
+  setTimeout(()=>document.getElementById('p-mlid').focus(),100);
+}
+function closePubModal(e){
+  if(e && e.target!==document.getElementById('modal-pub-bg'))return;
+  document.getElementById('modal-pub-bg').classList.add('hidden');
+}
+async function confirmPub(){
+  const mlid=document.getElementById('p-mlid').value.trim();
+  if(!mlid){document.getElementById('p-mlid').style.borderColor='#ff3547';return;}
+  document.getElementById('modal-pub-bg').classList.add('hidden');
+  const d=datos[_pSku]||{};
+  const precio=parseFloat(document.getElementById('p-price').value)||null;
+  const p={...d,ml_id:mlid,ts_pub:Date.now()};
+  if(precio)p.precio_pub=precio;
+  setDot('syn');
+  await fetch(FB_SKU+_pSku+'.json',{method:'PUT',body:JSON.stringify(p)});
+  const log={sku:_pSku,ml_id:mlid,desc:INV[_pSku]||'',qty:d.qty||1,fase:getFase(_pSku),ts_pub:Date.now(),ts_enc:d.ts||null};
+  if(precio)log.precio_pub=precio;
+  await fetch(FB_PUB+_pSku+'.json',{method:'PUT',body:JSON.stringify(log)});
+  datos[_pSku]=p;setDot('ok');
+  showToast('Publicado en ML: '+_pSku);
   render();
 }
 
@@ -273,14 +329,16 @@ function render(){
 
   if(!filtered.length){el.innerHTML='<div class="empty"><div class="empty-icon">&#128230;</div>Sin resultados</div>';return;}
   el.innerHTML=filtered.map(sku=>{
-    const d=datos[sku],enc=d&&d.estado==='enc',fase=getFase(sku);
-    const cls='item '+fase+(enc?'':' pend');
-    const mlLink=d&&d.ml_id?'<a class="item-ml-link" href="https://articulo.mercadolibre.com.ar/'+d.ml_id+'" target="_blank">&#9654; Ver en ML</a>':'';
-    const meta=enc?'<span class="qty">x'+(d.qty||1)+' u.</span><span class="ts">'+fmt(d.ts)+'</span>':'';
-    const actions=enc
-      ?'<button class="btn-reset" onclick="openResetModal(\''+sku+'\')">&#8634; Reset</button>'
-      :'<button class="btn-enc" onclick="openEncModal(\''+sku+'\')">Encontrado</button>';
-    return '<div class="'+cls+'"><div class="item-body"><div class="item-sku">'+sku+'</div><div class="item-desc">'+(INV[sku]||'')+'</div><div class="item-meta">'+meta+'</div>'+mlLink+'</div><div class="item-actions"><span class="'+badgeClass(fase)+'">'+badgeLabel(fase)+'</span>'+actions+'</div></div>';
+    const d=datos[sku],enc=d&&d.estado==='enc',pub=d&&d.ml_id,fase=getFase(sku);
+    const cls='item '+(pub?'pub':fase)+(enc&&!pub?'':' pend');
+    const mlLink=pub?'<a class="item-ml-link" href="https://articulo.mercadolibre.com.ar/'+d.ml_id+'" target="_blank">&#9654; Ver en ML</a>':'';
+    const meta=enc?'<span class="qty">x'+(d.qty||1)+' u.</span><span class="ts">'+fmt(d.ts)+'</span>'+(pub&&d.precio_pub?'<span class="qty">$'+d.precio_pub.toLocaleString('es-AR')+'</span>':''):'';
+    const actions=pub
+      ?'<span class="pub-locked">&#10003; Publicado</span>'
+      :enc
+        ?'<button class="btn-reset" onclick="openResetModal(\''+sku+'\')">&#8634; Reset</button><button class="btn-pub" onclick="openPubModal(\''+sku+'\')">&#8679; ML</button>'
+        :'<button class="btn-enc" onclick="openEncModal(\''+sku+'\')">Encontrado</button>';
+    return '<div class="'+cls+'"><div class="item-body"><div class="item-sku">'+sku+'</div><div class="item-desc">'+(INV[sku]||'')+'</div><div class="item-meta">'+meta+'</div>'+mlLink+'</div><div class="item-actions"><span class="'+badgeClass(pub?'pub':fase)+'">'+badgeLabel(pub?'pub':fase)+'</span>'+actions+'</div></div>';
   }).join('');
 }
 
