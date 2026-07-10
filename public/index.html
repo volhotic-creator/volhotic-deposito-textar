@@ -3,141 +3,155 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Panel Deposito Volhotic</title>
+<title>hotic._agent — Depósito Textar</title>
 <style>
-:root{color-scheme:light}*{box-sizing:border-box;margin:0;padding:0}
-body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f4f4f4;color:#1a1a1a}
-header{background:#1a1a1a;color:#FFE600;padding:14px 20px;display:flex;align-items:center;justify-content:space-between;font-weight:800;font-size:15px}
-header span{color:#aaa;font-size:12px;font-weight:400}
-.dot{width:8px;height:8px;border-radius:50%;background:#555;display:inline-block;margin-right:6px}
-.dot.ok{background:#00a651}.dot.err{background:#e4002b}.dot.syn{background:#FFE600;animation:pulse .8s infinite}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
-.stats{display:flex;gap:8px;padding:12px 14px;border-bottom:1px solid #e0e0e0;background:#fff;flex-wrap:wrap}
-.stat{flex:1;min-width:70px;text-align:center;padding:8px 6px;border-radius:8px;background:#f9f9f9;border:1px solid #e5e5e5}
-.stat .n{font-size:24px;font-weight:900;line-height:1}
-.stat .l{font-size:10px;color:#888;font-weight:600;margin-top:3px;text-transform:uppercase;letter-spacing:.4px}
-.n-enc{color:#00a651}.n-noe{color:#e4002b}.n-pend{color:#9ca3af}.n-total{color:#1a1a1a}
-.last-update{padding:5px 16px;font-size:11px;color:#aaa;background:#fff;border-bottom:2px solid #FFE600}
-.list{padding:8px 12px 80px;display:flex;flex-direction:column;gap:6px}
-.item{background:#fff;border-radius:8px;padding:11px 13px;display:flex;align-items:center;gap:10px;box-shadow:0 1px 3px rgba(0,0,0,.06);border-left:4px solid #e0e0e0}
-.item.f1{border-left-color:#00a651;background:#f0fdf4}
-.item.f3{border-left-color:#9333ea;background:#faf5ff}
-.item.f2{border-left-color:#f59e0b;background:#fffbeb}
+:root{color-scheme:light;--y:#FFE600;--b:#1a1a1a;--g:#f5f5f5;--gr:#888}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f0f0f0;color:var(--b);min-height:100vh}
+header{background:var(--b);color:var(--y);padding:0 16px;height:52px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;box-shadow:0 2px 8px rgba(0,0,0,.4)}
+.hdr-left{display:flex;align-items:center;gap:10px}
+.hdr-logo{font-weight:900;font-size:16px;letter-spacing:-.3px}
+.hdr-logo span{color:var(--y)}
+.hdr-sub{font-size:10px;color:#888;font-weight:500;letter-spacing:.6px;text-transform:uppercase}
+.hdr-right{display:flex;align-items:center;gap:8px}
+.dot{width:8px;height:8px;border-radius:50%;background:#555}
+.dot.ok{background:#00c851}.dot.err{background:#ff3547}.dot.syn{background:var(--y);animation:blink .7s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
+#hdr-time{font-size:11px;color:#666;font-weight:500}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);background:var(--b);border-bottom:3px solid var(--y)}
+.stat{text-align:center;padding:10px 8px;border-right:1px solid #2a2a2a}
+.stat:last-child{border-right:none}
+.stat .n{font-size:26px;font-weight:900;line-height:1;color:var(--y)}
+.stat .l{font-size:9px;color:#888;font-weight:700;margin-top:2px;text-transform:uppercase;letter-spacing:.6px}
+.stat .n.enc{color:#00c851}.stat .n.pend{color:#aaa}.stat .n.tot{color:var(--y)}
+.search-wrap{background:#fff;padding:10px 12px;border-bottom:1px solid #ddd;position:sticky;top:52px;z-index:90}
+.search-box{display:flex;align-items:center;gap:8px;background:#f5f5f5;border-radius:10px;padding:8px 12px;border:1.5px solid #e0e0e0;transition:border .2s}
+.search-box:focus-within{border-color:var(--y)}
+.search-icon{color:#aaa;font-size:14px;flex-shrink:0}
+#search{flex:1;border:none;background:none;font-size:14px;color:var(--b);outline:none}
+#search::placeholder{color:#bbb}
+.search-clear{background:none;border:none;color:#bbb;cursor:pointer;font-size:18px;padding:0 2px;line-height:1;display:none}
+.tabs{display:flex;background:#fff;border-bottom:2px solid #e8e8e8;overflow-x:auto;-webkit-overflow-scrolling:touch}
+.tab{flex:1;min-width:72px;padding:11px 4px 9px;font-size:10px;font-weight:800;color:#aaa;border:none;background:none;cursor:pointer;text-transform:uppercase;letter-spacing:.5px;white-space:nowrap;position:relative;transition:color .15s}
+.tab.on{color:var(--b)}
+.tab.on::after{content:'';position:absolute;bottom:0;left:8px;right:8px;height:2.5px;background:var(--y);border-radius:2px}
+.tab-badge{display:inline-block;background:var(--y);color:var(--b);font-size:9px;font-weight:900;border-radius:10px;padding:1px 5px;margin-left:3px;vertical-align:middle}
+.section-info{padding:6px 14px;font-size:11px;color:#999;background:#fff;border-bottom:1px solid #efefef;font-weight:500}
+.list{padding:10px 10px 100px;display:flex;flex-direction:column;gap:7px}
+.empty{text-align:center;padding:50px 20px;color:#ccc;font-size:14px}
+.empty-icon{font-size:36px;margin-bottom:10px;opacity:.5}
+.item{background:#fff;border-radius:10px;padding:12px 12px 10px;display:flex;align-items:flex-start;gap:10px;box-shadow:0 1px 4px rgba(0,0,0,.07);border-left:4px solid #e0e0e0;transition:box-shadow .15s}
+.item:active{box-shadow:0 0 0 2px var(--y)}
+.item.f1{border-left-color:#00c851;background:#f8fff9}
+.item.f2{border-left-color:var(--y);background:#fffef0}
+.item.f3{border-left-color:#6c63ff;background:#f9f8ff}
 .item.pub{border-left-color:#0ea5e9;background:#f0f9ff}
-.item-icon{font-size:18px;flex-shrink:0}
+.item.pend{border-left-color:#e0e0e0}
 .item-body{flex:1;min-width:0}
-.item-sku{font-size:13px;font-weight:800;font-family:monospace}
-.item-desc{font-size:12px;color:#555;margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.item-ts{font-size:10px;color:#aaa;margin-top:2px}
-.item-badge{font-size:11px;font-weight:700;padding:4px 9px;border-radius:20px;flex-shrink:0;white-space:nowrap}
-.badge-f1{background:#d1fae5;color:#065f46}.badge-f3{background:#ede9fe;color:#5b21b6}
-.badge-f2{background:#fef3c7;color:#92400e}.badge-pub{background:#e0f2fe;color:#0369a1}
-.item-link{font-size:11px;color:#0369a1;text-decoration:none;margin-top:3px;display:block}
-.empty{text-align:center;padding:40px 20px;color:#bbb;font-size:14px}
-.placeholder-msg{text-align:center;padding:30px 20px;color:#aaa;font-size:13px;background:#fff;border-radius:10px;margin:8px 0}
-.placeholder-msg strong{display:block;color:#888;margin-bottom:6px;font-size:15px}
-.refresh-btn{position:fixed;bottom:20px;right:20px;background:#1a1a1a;color:#FFE600;border:none;border-radius:50%;width:50px;height:50px;font-size:20px;cursor:pointer;box-shadow:0 3px 10px rgba(0,0,0,.25)}
-.tabs{display:flex;background:#fff;border-bottom:2px solid #FFE600;overflow-x:auto}
-.tab{flex:1;min-width:80px;padding:10px 4px;font-size:11px;font-weight:700;color:#999;border:none;background:none;cursor:pointer;text-transform:uppercase;letter-spacing:.4px;white-space:nowrap}
-.tab.on{color:#1a1a1a;border-bottom:2px solid #1a1a1a;margin-bottom:-2px}
-.section-count{font-size:11px;color:#aaa;padding:6px 14px 2px}
-.btn-enc{font-size:11px;font-weight:700;padding:6px 10px;border-radius:8px;border:none;cursor:pointer;background:#e5e7eb;color:#374151;flex-shrink:0}
+.item-sku{font-size:13px;font-weight:900;font-family:monospace;letter-spacing:.3px;color:var(--b)}
+.item-desc{font-size:12px;color:#555;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.item-meta{font-size:10px;color:#bbb;margin-top:3px;display:flex;gap:8px;flex-wrap:wrap}
+.item-meta .ts{color:#bbb}
+.item-meta .qty{color:#00c851;font-weight:700}
+.item-ml-link{font-size:11px;font-weight:700;color:#0369a1;text-decoration:none;margin-top:4px;display:inline-flex;align-items:center;gap:4px;background:#e0f2fe;padding:3px 8px;border-radius:6px}
+.item-actions{display:flex;flex-direction:column;align-items:flex-end;gap:5px;flex-shrink:0}
+.badge{font-size:10px;font-weight:800;padding:4px 8px;border-radius:20px;white-space:nowrap;text-align:center}
+.badge-f1{background:var(--y);color:var(--b)}
+.badge-f2{background:#fffde0;color:#7a6000;border:1px solid #ffe000}
+.badge-f3{background:#ede9fe;color:#4f3db0}
+.badge-pub{background:#e0f2fe;color:#0369a1}
+.btn-enc{font-size:11px;font-weight:800;padding:7px 11px;border-radius:8px;border:none;cursor:pointer;background:var(--b);color:var(--y);letter-spacing:.3px;white-space:nowrap;-webkit-tap-highlight-color:transparent}
+.btn-enc:active{background:#333}
+.btn-reset{font-size:10px;font-weight:700;padding:4px 8px;border-radius:6px;border:1px solid #e0e0e0;cursor:pointer;background:#fff;color:#999;white-space:nowrap;-webkit-tap-highlight-color:transparent}
+.btn-reset:active{background:#f5f5f5}
+.fab{position:fixed;bottom:22px;right:18px;background:var(--b);color:var(--y);border:none;border-radius:50%;width:52px;height:52px;font-size:22px;cursor:pointer;box-shadow:0 4px 14px rgba(0,0,0,.3);z-index:200;-webkit-tap-highlight-color:transparent}
+.fab:active{transform:scale(.93)}
+.toast{position:fixed;bottom:84px;left:50%;transform:translateX(-50%);background:var(--b);color:var(--y);padding:8px 18px;border-radius:20px;font-size:12px;font-weight:700;z-index:300;opacity:0;transition:opacity .3s;pointer-events:none;white-space:nowrap}
+.toast.show{opacity:1}
 </style>
 </head>
 <body>
 <header>
-  <div><span class="dot" id="dot"></span>Panel Deposito Volhotic</div>
-  <span id="header-ts">-</span>
+  <div class="hdr-left">
+    <div>
+      <div class="hdr-logo">hotic<span>._agent</span></div>
+      <div class="hdr-sub">Depósito Textar</div>
+    </div>
+  </div>
+  <div class="hdr-right">
+    <span class="dot" id="dot"></span>
+    <span id="hdr-time">—</span>
+  </div>
 </header>
 <div class="stats">
-  <div class="stat"><div class="n n-enc" id="s-enc">-</div><div class="l">Enc.</div></div>
-  <div class="stat"><div class="n n-noe" id="s-noe">-</div><div class="l">No enc.</div></div>
-  <div class="stat"><div class="n n-pend" id="s-pend">-</div><div class="l">Pend.</div></div>
-  <div class="stat"><div class="n n-total">131</div><div class="l">Total</div></div>
+  <div class="stat"><div class="n enc" id="s-enc">—</div><div class="l">Enc.</div></div>
+  <div class="stat"><div class="n pend" id="s-pend">—</div><div class="l">Pendientes</div></div>
+  <div class="stat"><div class="n tot">131</div><div class="l">Total SKUs</div></div>
 </div>
-<div class="last-update" id="last-update">Cargando...</div>
+<div class="search-wrap">
+  <div class="search-box">
+    <span class="search-icon">&#8981;</span>
+    <input id="search" type="search" placeholder="Buscar SKU, OEM, descripcion..." oninput="onSearch(this.value)" autocomplete="off" autocorrect="off" spellcheck="false">
+    <button class="search-clear" id="search-clear" onclick="clearSearch()">&#215;</button>
+  </div>
+</div>
 <div class="tabs">
-  <button class="tab on" onclick="setTab('f1')">F1 AG</button>
-  <button class="tab" onclick="setTab('f3')">F3 Disco</button>
-  <button class="tab" onclick="setTab('f2')">F2 Past.</button>
-  <button class="tab" onclick="setTab('pub')">Pub.</button>
+  <button class="tab on" onclick="setTab('f1')" id="tab-f1">F1 Discos<span class="tab-badge" id="tb1">69</span></button>
+  <button class="tab" onclick="setTab('f2')" id="tab-f2">F2 Past.<span class="tab-badge" id="tb2">2</span></button>
+  <button class="tab" onclick="setTab('f3')" id="tab-f3">F3 Sin Match<span class="tab-badge" id="tb3">—</span></button>
+  <button class="tab" onclick="setTab('pub')" id="tab-pub">Publicados<span class="tab-badge" id="tb4">0</span></button>
 </div>
-<div class="section-count" id="section-count"></div>
+<div class="section-info" id="section-info"></div>
 <div class="list" id="list"></div>
-<button class="refresh-btn" onclick="cargar()">R</button>
+<div class="toast" id="toast"></div>
+<button class="fab" onclick="cargar()">&#8635;</button>
 <script>
 const FB='https://volhotic-textar-default-rtdb.firebaseio.com/volhotic/lista.json';
+const FB_SKU='https://volhotic-textar-default-rtdb.firebaseio.com/volhotic/lista/';
 const TOTAL=131;
 const FASE1=new Set(["92228903","92159510","92140800","92140803","92224903","92229805","92120603","92120700","92120703","92120705","92174203","92098600","92106100","92106700","92106703","92105800","92105803","92160300","92238305","92160200","92160205","92082303","92082203","92121000","92121003","92106200","92106300","92137100","92072100","92275903","92143900","92083500","92109803","92088500","92090800","92104100","92117303","92057600","92057603","92132200","92132500","92132503","92132600","92120803","92140703","92120900","92120903","92083600","92083603","92132300","92229203","92159603","92163503","92282605","92282705","92282803","92151005","92119903","92163603","92115503","92105905","92106003","92057500","92106603","92032003","92121103","92121505","92121605","92255403"]);
-const FASE2_AG=new Set(["2313101","2355403","2391401"]);
-function esFase2(s){return s.startsWith('2')||s.startsWith('98')||s==='4226001';}
-function esFase3(s){return s.startsWith('92')&&!FASE1.has(s);}
-const INV={"92082203":"Disco Del. 256mm Bora/Golf/Audi A1","92082303":"Disco Del. 280mm Golf/Bora/Audi A3","92106603":"Disco Del. 287mm Golf/Bora/Polo/Audi","92098500":"Disco Del. 312mm Bora/Polo/Audi A3","92098503":"Disco Del. 312mm Bora/Polo/Audi A3","92229203":"Disco Del. A4 A5 A6 Q5","92228903":"Disco Del. Amarok","92160205":"Disco Del. Audi A4 A5","92282605":"Disco Del. Audi A4 A5 A6 Q5","92282705":"Disco Del. Audi A4 A5 A6 Q5","92160200":"Disco Del. Audi A4 A5 Q5","92106700":"Disco Del. Audi A4 A6 M/V","92106703":"Disco Del. Audi A4 A6 M/V","92057600":"Disco Del. Audi A4 A6/Passat M/V","92106100":"Disco Del. Audi A4 A6/Passat M/V","92143900":"Disco Del. Audi A4 M/V","92083500":"Disco Del. Audi A4/Passat M/V","92132200":"Disco Del. Audi A6","92132300":"Disco Del. Audi A6","92161510":"Disco Del. Audi TT/Golf Der","92161410":"Disco Del. Audi TT/Golf Izq","92055603":"Disco Del. BMW E36/46","92217810":"Disco Del. BMW E60","92159603":"Disco Del. Clase C","92163503":"Disco Del. Clase C E/Slc/Slk","92151005":"Disco Del. Clase C/Clk","92119903":"Disco Del. Clase E/Cls","92238403":"Disco Del. E 81 87","92097203":"Disco Del. E46","92103103":"Disco Del. Ford (Australia)","92120700":"Disco Del. Golf/Vento/Audi A3/Seat Leon","92120703":"Disco Del. Golf/Vento/Audi A3/Seat Leon","92120705":"Disco Del. Golf/Vento/Audi A3/Seat Leon","92120803":"Disco Del. Golf/Vento/Audi A3 288mm","92027403":"Disco Del. Mercedes 190","92257503":"Disco Del. Mercedes Clase A B/Cla","92241603":"Disco Del. Mercedes Clase A B/Cla","92059403":"Disco Del. Mercedes Clase C","92106003":"Disco Del. Mercedes Clase C E/Clk","92105905":"Disco Del. Mercedes Clase C/Clk","92121000":"Disco Del. Passat 00-05","92121003":"Disco Del. Passat 00-05","92083600":"Disco Del. Passat 96-01","92083603":"Disco Del. Passat 96-01","92057603":"Disco Del. Passat/Audi A4 A6 M/V","92120603":"Disco Del. Passat/Vento/Audi A3","92275903":"Disco Del. Polo/Audi A1","92207110":"Disco Del. R8 RS5 365mm","92229805":"Disco Del. Seat Leon/Golf/Vento/Audi A3","92109803":"Disco Del. Sharan/Transporter","92121605":"Disco Del. Touareg Der","92121505":"Disco Del. Touareg Izq","92219605":"Disco Del. Touareg","92219505":"Disco Del. Touareg","92083800":"Disco Del. Transporter","92083700":"Disco Del. Transporter","92083703":"Disco Del. Transporter","92255403":"Disco Del/Tras 300mm Golf/Passat/Tiguan","92282803":"Disco Del/Tras Audi A4 A5 A6 Q5","92059503":"Disco Del/Tras Mercedes 124","92140703":"Disco Del/Tras Vento/Passat/Audi A3 Q3","92141200":"Disco Ford Focus II","92159300":"Disco Ford Galaxy/Mondeo","92159200":"Disco Ford Galaxy/S-Max","92109700":"Disco Ford Mondeo","92109703":"Disco Ford Mondeo","92109600":"Disco Ford Mondeo III","92088500":"Disco Tras. Audi A4 A6/Passat M/V","92238305":"Disco Tras. Audi A4 A5 A6 A7 Q5 Q7","92160300":"Disco Tras. Audi A4 A5 Q5","92106300":"Disco Tras. Audi A4 M/V","92072100":"Disco Tras. Audi A4 M/V","92137100":"Disco Tras. Audi A4 M/V","92106200":"Disco Tras. Audi A4 M/V","92174203":"Disco Tras. Audi A4/Passat M/V","92132600":"Disco Tras. Audi A6","92132500":"Disco Tras. Audi A6 04-11","92132503":"Disco Tras. Audi A6 04-11","92159510":"Disco Tras. Audi A6 06-11","92104100":"Disco Tras. Audi A6 97-05","92090800":"Disco Tras. Audi A6 97-05","92117303":"Disco Tras. Audi A6 97-05","92057500":"Disco Tras. Audi A6/Passat M/V","92122005":"Disco Tras. Audi Q7/Touareg","92261003":"Disco Tras. BMW","92133103":"Disco Tras. BMW E 81 87 90","92105803":"Disco Tras. Bora/Golf","92105800":"Disco Tras. Bora/Golf","92098600":"Disco Tras. Bora/Golf/Seat Leon Toledo","92072403":"Disco Tras. E46","92274103":"Disco Tras. Ford Transit","92121103":"Disco Tras. Golf/Vento/Audi A3","92120900":"Disco Tras. Golf/Vento/Audi A3/Seat Leon","92120903":"Disco Tras. Golf/Vento/Audi A3/Seat Leon","92032703":"Disco Tras. Mercedes 124/Clase C E","92132103":"Disco Tras. Mercedes Clase A B","92163603":"Disco Tras. Mercedes Clase C E","92115503":"Disco Tras. Mercedes Clase E","92056900":"Disco Tras. Mercedes Clase S","92032600":"Disco Tras. Mercedes Clase S/123","92032003":"Disco Tras. Mercedes Coupe 124/Clase E","92238703":"Disco Tras. Mini Couper","92175003":"Disco Tras. Mini Couper","92140803":"Disco Tras. Passat/Tiguan/Vento/Audi A3","92140800":"Disco Tras. Passat/Tiguan/Vento/Audi A3","92098200":"Disco Tras. Seat Cordoba/Polo","92074303":"Disco Tras. Sharan","92083900":"Disco Tras. Transporter","92224903":"Disco Tras. Vento/Passat/Audi A1 A3","4226001":"Pastillas De Freno","2313101":"Pastillas Del. Bora/Fox/Suran","2372301":"Pastillas Del. Ford Focus II III","2412301":"Pastillas Del. Ford Mondeo","2327904":"Pastillas Del. Ford Mondeo III","2413701":"Pastillas Tras. Ford Focus II","2453703":"Pastillas Tras. Ford Galaxy/Focus","2355701":"Pastillas Tras. Ford Mondeo III","2355403":"Pastillas Tras. Sharan","2391401":"Pastillas Tras. Vento","98043500":"Sensor BMW Del.","98042400":"Sensor BMW Del.","98047500":"Sensor BMW Del.","98030200":"Sensor Mini Del.","98052700":"Sensor Mini Del.","98044800":"Sensor Mini Del.","98048700":"Sensor Mercedes Del/Tras","98030700":"Sensor BMW Tras.","98047600":"Sensor BMW Tras.","98052100":"Sensor BMW/Mini Tras.","98044900":"Sensor Mini Tras.","98036300":"Sensor Mini Tras."};
-let datos={},tab='f1';
+const FASE2=new Set(["2355403","2391401"]);
+const INV={"92082203":"Disco Del. 256mm Bora/Golf/Audi A1","92082303":"Disco Del. 280mm Golf/Bora/Audi A3","92106603":"Disco Del. 287mm Golf/Bora/Polo/Audi","92098500":"Disco Del. 312mm Bora/Polo/Audi A3","92098503":"Disco Del. 312mm Bora/Polo/Audi A3","92229203":"Disco Del. A4 A5 A6 Q5","92228903":"Disco Del. Amarok","92160205":"Disco Del. Audi A4 A5","92282605":"Disco Del. Audi A4 A5 A6 Q5","92282705":"Disco Del. Audi A4 A5 A6 Q5","92160200":"Disco Del. Audi A4 A5 Q5","92106700":"Disco Del. Audi A4 A6 M/V","92106703":"Disco Del. Audi A4 A6 M/V","92057600":"Disco Del. Audi A4 A6/Passat M/V","92106100":"Disco Del. Audi A4 A6/Passat M/V","92143900":"Disco Del. Audi A4 M/V","92083500":"Disco Del. Audi A4/Passat M/V","92132200":"Disco Del. Audi A6","92132300":"Disco Del. Audi A6","92161510":"Disco Del. Audi TT/Golf Der","92161410":"Disco Del. Audi TT/Golf Izq","92055603":"Disco Del. BMW E36/46","92217810":"Disco Del. BMW E60","92159603":"Disco Del. Clase C","92163503":"Disco Del. Clase C E/Slc/Slk","92151005":"Disco Del. Clase C/Clk","92119903":"Disco Del. Clase E/Cls","92238403":"Disco Del. E 81 87","92097203":"Disco Del. E46","92103103":"Disco Del. Ford Australia","92120700":"Disco Del. Golf/Vento/Audi A3/Seat Leon","92120703":"Disco Del. Golf/Vento/Audi A3/Seat Leon","92120705":"Disco Del. Golf/Vento/Audi A3/Seat Leon","92120803":"Disco Del. Golf/Vento/Audi A3 288mm","92027403":"Disco Del. Mercedes 190","92257503":"Disco Del. Mercedes Clase A B/Cla","92241603":"Disco Del. Mercedes Clase A B/Cla","92059403":"Disco Del. Mercedes Clase C","92106003":"Disco Del. Mercedes Clase C E/Clk","92105905":"Disco Del. Mercedes Clase C/Clk","92121000":"Disco Del. Passat 00-05","92121003":"Disco Del. Passat 00-05","92083600":"Disco Del. Passat 96-01","92083603":"Disco Del. Passat 96-01","92057603":"Disco Del. Passat/Audi A4 A6 M/V","92120603":"Disco Del. Passat/Vento/Audi A3","92275903":"Disco Del. Polo/Audi A1","92207110":"Disco Del. R8 RS5 365mm","92229805":"Disco Del. Seat Leon/Golf/Vento/Audi A3","92109803":"Disco Del. Sharan/Transporter","92121605":"Disco Del. Touareg Der","92121505":"Disco Del. Touareg Izq","92219605":"Disco Del. Touareg","92219505":"Disco Del. Touareg","92083800":"Disco Del. Transporter","92083700":"Disco Del. Transporter","92083703":"Disco Del. Transporter","92255403":"Disco Del/Tras 300mm Golf/Passat/Tiguan","92282803":"Disco Del/Tras Audi A4 A5 A6 Q5","92059503":"Disco Del/Tras Mercedes 124","92140703":"Disco Del/Tras Vento/Passat/Audi A3 Q3","92141200":"Disco Ford Focus II","92159300":"Disco Ford Galaxy/Mondeo","92159200":"Disco Ford Galaxy/S-Max","92109700":"Disco Ford Mondeo","92109703":"Disco Ford Mondeo","92109600":"Disco Ford Mondeo III","92088500":"Disco Tras. Audi A4 A6/Passat M/V","92238305":"Disco Tras. Audi A4 A5 A6 A7 Q5 Q7","92160300":"Disco Tras. Audi A4 A5 Q5","92106300":"Disco Tras. Audi A4 M/V","92072100":"Disco Tras. Audi A4 M/V","92137100":"Disco Tras. Audi A4 M/V","92106200":"Disco Tras. Audi A4 M/V","92174203":"Disco Tras. Audi A4/Passat M/V","92132600":"Disco Tras. Audi A6","92132500":"Disco Tras. Audi A6 04-11","92132503":"Disco Tras. Audi A6 04-11","92159510":"Disco Tras. Audi A6 06-11","92104100":"Disco Tras. Audi A6 97-05","92090800":"Disco Tras. Audi A6 97-05","92117303":"Disco Tras. Audi A6 97-05","92057500":"Disco Tras. Audi A6/Passat M/V","92122005":"Disco Tras. Audi Q7/Touareg","92261003":"Disco Tras. BMW","92133103":"Disco Tras. BMW E 81 87 90","92105803":"Disco Tras. Bora/Golf","92105800":"Disco Tras. Bora/Golf","92098600":"Disco Tras. Bora/Golf/Seat Leon Toledo","92072403":"Disco Tras. E46","92274103":"Disco Tras. Ford Transit","92121103":"Disco Tras. Golf/Vento/Audi A3","92120900":"Disco Tras. Golf/Vento/Audi A3/Seat Leon","92120903":"Disco Tras. Golf/Vento/Audi A3/Seat Leon","92032703":"Disco Tras. Mercedes 124/Clase C E","92132103":"Disco Tras. Mercedes Clase A B","92163603":"Disco Tras. Mercedes Clase C E","92115503":"Disco Tras. Mercedes Clase E","92056900":"Disco Tras. Mercedes Clase S","92032600":"Disco Tras. Mercedes Clase S/123","92032003":"Disco Tras. Mercedes Coupe 124/Clase E","92238703":"Disco Tras. Mini Couper","92175003":"Disco Tras. Mini Couper","92140803":"Disco Tras. Passat/Tiguan/Vento/Audi A3","92140800":"Disco Tras. Passat/Tiguan/Vento/Audi A3","92098200":"Disco Tras. Seat Cordoba/Polo","92074303":"Disco Tras. Sharan","92083900":"Disco Tras. Transporter","92224903":"Disco Tras. Vento/Passat/Audi A1 A3","4226001":"Pastillas De Freno Genericas","2313101":"Pastillas Del. Bora/Fox/Suran","2372301":"Pastillas Del. Ford Focus II III","2412301":"Pastillas Del. Ford Mondeo","2327904":"Pastillas Del. Ford Mondeo III","2413701":"Pastillas Tras. Ford Focus II","2453703":"Pastillas Tras. Ford Galaxy/Focus","2355701":"Pastillas Tras. Ford Mondeo III","2355403":"Pastillas Tras. Sharan","2391401":"Pastillas Tras. Vento","98043500":"Sensor BMW Del.","98042400":"Sensor BMW Del.","98047500":"Sensor BMW Del.","98030200":"Sensor Mini Del.","98052700":"Sensor Mini Del.","98044800":"Sensor Mini Del.","98048700":"Sensor Mercedes Del/Tras","98030700":"Sensor BMW Tras.","98047600":"Sensor BMW Tras.","98052100":"Sensor BMW/Mini Tras.","98044900":"Sensor Mini Tras.","98036300":"Sensor Mini Tras."};
+function getFase(s){return FASE1.has(s)?'f1':FASE2.has(s)?'f2':'f3';}
+let datos={},tab='f1',query='';
 function setDot(s){document.getElementById('dot').className='dot '+s;}
-function fmt(ts){if(!ts)return'';return new Date(ts).toLocaleString('es-AR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'});}
-function setTab(t){tab=t;document.querySelectorAll('.tab').forEach(el=>el.classList.remove('on'));document.querySelectorAll('.tab')[['f1','f3','f2','pub'].indexOf(t)].classList.add('on');render();}
-async function marcarEncontrado(sku,cant){
-  const p={estado:'enc',ts:Date.now(),qty:cant};
-  await fetch('https://volhotic-textar-default-rtdb.firebaseio.com/volhotic/lista/'+sku+'.json',{method:'PUT',body:JSON.stringify(p)});
-  datos[sku]=p;render();
-}
-function promptEnc(sku){
-  const c=prompt('SKU '+sku+'\n'+(INV[sku]||'')+'\n\nCuantas unidades?','1');
-  if(c===null)return;
-  marcarEncontrado(sku,parseInt(c)||1);
-}
-function renderItem(sku,cls,icon,isEnc,badge,badgeCls,extra){
-  const d=datos[sku]||{};
-  return '<div class="item '+cls+'"><div class="item-icon">'+icon+'</div><div class="item-body"><div class="item-sku">SKU '+sku+'</div><div class="item-desc">'+(INV[sku]||sku)+'</div>'+(isEnc&&d.ts?'<div class="item-ts">Enc. '+fmt(d.ts)+(d.qty?' - '+d.qty+' u':'')+'</div>':'')+(extra||'')+'</div>'+(isEnc?'<span class="item-badge '+badgeCls+'">'+badge+'</span>':'<button class="btn-enc" onclick="promptEnc(\''+sku+'\')">Enc.</button>')+'</div>';
-}
+function fmt(ts){if(!ts)return '';const d=new Date(ts);return d.toLocaleDateString('es-AR',{day:'2-digit',month:'2-digit'})+' '+d.toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit'});}
+function showToast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2000);}
+function onSearch(v){query=v.trim().toLowerCase();document.getElementById('search-clear').style.display=query?'block':'none';render();}
+function clearSearch(){document.getElementById('search').value='';onSearch('');}
+function matchSearch(s){if(!query)return true;const d=(INV[s]||'').toLowerCase();return s.toLowerCase().includes(query)||d.includes(query);}
+function setTab(t){tab=t;['f1','f2','f3','pub'].forEach(id=>document.getElementById('tab-'+id).classList.toggle('on',id===t));render();}
+async function marcarEncontrado(sku,cant){const p={estado:'enc',ts:Date.now(),qty:cant};setDot('syn');await fetch(FB_SKU+sku+'.json',{method:'PUT',body:JSON.stringify(p)});datos[sku]=p;setDot('ok');showToast('OK '+sku+' ('+cant+' u.)');render();}
+function promptEnc(sku){const c=prompt('SKU '+sku+'\n'+(INV[sku]||'')+'\n\nCuantas unidades?','1');if(c===null)return;const n=parseInt(c)||1;marcarEncontrado(sku,n);}
+async function resetSku(sku){if(!confirm('Restablecer '+sku+'?\nSe borrara el estado guardado.'))return;setDot('syn');await fetch(FB_SKU+sku+'.json',{method:'DELETE'});delete datos[sku];setDot('ok');showToast('Restablecido: '+sku);render();}
+function badgeLabel(f){return f==='f1'?'F1 Disco':f==='f2'?'F2 Past.':f==='f3'?'F3 Sin Match':'Publicado';}
+function badgeClass(f){return 'badge badge-'+f;}
 function render(){
-  const enc=Object.entries(datos).filter(([,v])=>v.estado==='enc');
-  const noe=Object.entries(datos).filter(([,v])=>v.estado==='noe');
-  const pub=Object.entries(datos).filter(([,v])=>v.publicado===true);
-  document.getElementById('s-enc').textContent=enc.length;
-  document.getElementById('s-noe').textContent=noe.length;
-  document.getElementById('s-pend').textContent=Math.max(0,TOTAL-enc.length-noe.length);
-  const list=document.getElementById('list'),count=document.getElementById('section-count');
-  if(tab==='f1'){
-    const all=Object.keys(INV).filter(s=>FASE1.has(s));
-    const found=all.filter(s=>datos[s]&&datos[s].estado==='enc');
-    const pend=all.filter(s=>!datos[s]||datos[s].estado!=='enc');
-    count.textContent=found.length+'/'+all.length+' Fase 1 encontrados - listos para Vender uno igual';
-    list.innerHTML=found.sort((a,b)=>(datos[b]?.ts||0)-(datos[a]?.ts||0)).map(s=>renderItem(s,'f1','V',true,datos[s]?.publicado?'Pub.':'Listo','badge-f1','')).join('')+pend.map(s=>renderItem(s,'','O',false,'','','')).join('');
-  } else if(tab==='f3'){
-    const all=Object.keys(INV).filter(s=>esFase3(s));
-    const found=all.filter(s=>datos[s]&&datos[s].estado==='enc');
-    const pend=all.filter(s=>!datos[s]||datos[s].estado!=='enc');
-    count.textContent=found.length+'/'+all.length+' Fase 3 - sin equivalente AG';
-    list.innerHTML=found.sort((a,b)=>(datos[b]?.ts||0)-(datos[a]?.ts||0)).map(s=>renderItem(s,'f3','B',true,'Manual','badge-f3','')).join('')+pend.map(s=>renderItem(s,'','O',false,'','','')).join('');
-  } else if(tab==='f2'){
-    const all=Object.keys(INV).filter(s=>esFase2(s));
-    const found=all.filter(s=>datos[s]&&datos[s].estado==='enc');
-    const pend=all.filter(s=>!datos[s]||datos[s].estado!=='enc');
-    count.textContent=found.length+'/'+all.length+' Fase 2 encontrados';
-    list.innerHTML=found.sort((a,b)=>(datos[b]?.ts||0)-(datos[a]?.ts||0)).map(s=>{const ag=FASE2_AG.has(s);return renderItem(s,ag?'f1':'f2',ag?'V':'Y',true,ag?'AG listo':'Fase 2',ag?'badge-f1':'badge-f2',ag?'<div class="item-ts" style="color:#065f46;font-weight:700">AG disponible - Vender uno igual</div>':'');}).join('')+pend.map(s=>renderItem(s,'','O',false,'','','')).join('');
-  } else {
-    count.textContent=pub.length+' publicaciones en ML';
-    if(!pub.length){list.innerHTML='<div class="placeholder-msg"><strong>Publicados en ML</strong>Aparecen aqui cuando se publique.</div>';return;}
-    list.innerHTML=pub.sort((a,b)=>(b[1].publicado_ts||0)-(a[1].publicado_ts||0)).map(([sku,d])=>'<div class="item pub"><div class="item-icon">*</div><div class="item-body"><div class="item-sku">SKU '+sku+'</div><div class="item-desc">'+(INV[sku]||sku)+'</div>'+(d.publicado_ts?'<div class="item-ts">Pub. '+fmt(d.publicado_ts)+'</div>':'')+(d.precio_pub?'<div class="item-ts" style="color:#0369a1;font-weight:700">$ '+d.precio_pub.toLocaleString('es-AR')+'</div>':'')+(d.ml_link?'<a class="item-link" href="'+d.ml_link+'" target="_blank">Ver en ML</a>':'')+'</div><span class="item-badge badge-pub">Publicado</span></div>').join('');
-  }
+  const el=document.getElementById('list'),info=document.getElementById('section-info'),skus=Object.keys(INV);
+  const encList=skus.filter(s=>datos[s]&&datos[s].estado==='enc');
+  const pubList=skus.filter(s=>datos[s]&&datos[s].ml_id);
+  document.getElementById('s-enc').textContent=encList.length;
+  document.getElementById('s-pend').textContent=TOTAL-encList.length;
+  document.getElementById('tb4').textContent=pubList.length;
+  let filtered;
+  if(tab==='pub'){filtered=skus.filter(s=>datos[s]&&datos[s].ml_id&&matchSearch(s));info.textContent='Publicados en MercadoLibre ('+filtered.length+')';}
+  else if(tab==='f1'){filtered=skus.filter(s=>getFase(s)==='f1'&&matchSearch(s));info.textContent='Discos con match Alta Gama ('+filtered.length+')';}
+  else if(tab==='f2'){filtered=skus.filter(s=>getFase(s)==='f2'&&matchSearch(s));info.textContent='Pastillas con match Alta Gama ('+filtered.length+')';}
+  else{filtered=skus.filter(s=>getFase(s)==='f3'&&matchSearch(s));info.textContent='Sin match Alta Gama ('+filtered.length+')';}
+  if(!filtered.length){el.innerHTML='<div class="empty"><div class="empty-icon">&#128230;</div>Sin resultados</div>';return;}
+  el.innerHTML=filtered.map(sku=>{
+    const d=datos[sku],enc=d&&d.estado==='enc',fase=getFase(sku);
+    const cls='item '+fase+(enc?'':' pend');
+    const mlLink=d&&d.ml_id?'<a class="item-ml-link" href="https://articulo.mercadolibre.com.ar/'+d.ml_id+'" target="_blank">&#9654; Ver en ML</a>':'';
+    const meta=enc?'<span class="qty">x'+( d.qty||1)+' u.</span><span class="ts">'+fmt(d.ts)+'</span>':'';
+    const actions=enc?'<button class="btn-reset" onclick="resetSku(\''+sku+'\')">&#8634; Reset</button>':'<button class="btn-enc" onclick="promptEnc(\''+sku+'\')">Encontrado</button>';
+    return '<div class="'+cls+'"><div class="item-body"><div class="item-sku">'+sku+'</div><div class="item-desc">'+(INV[sku]||'')+'</div><div class="item-meta">'+meta+'</div>'+mlLink+'</div><div class="item-actions"><span class="'+badgeClass(fase)+'">'+badgeLabel(fase)+'</span>'+actions+'</div></div>';
+  }).join('');
 }
-async function cargar(){
-  setDot('syn');
-  document.getElementById('last-update').textContent='Actualizando...';
-  try{
-    const r=await fetch(FB);
-    const raw=await r.json();
-    datos=raw||{};
-    const ts=new Date().toLocaleString('es-AR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'});
-    document.getElementById('header-ts').textContent=ts;
-    document.getElementById('last-update').textContent='Actualizado: '+ts;
-    setDot('ok');render();
-  }catch(e){setDot('err');document.getElementById('last-update').textContent='Error al cargar';}
-}
-cargar();
-setInterval(cargar,60000);
+async function cargar(){setDot('syn');try{const r=await fetch(FB);const j=await r.json();datos=j||{};setDot('ok');}catch(e){setDot('err');}render();}
+function tick(){const n=new Date();document.getElementById('hdr-time').textContent=n.toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit'});}
+tick();setInterval(tick,30000);
+cargar();setInterval(cargar,120000);
 </script>
 </body>
 </html>
